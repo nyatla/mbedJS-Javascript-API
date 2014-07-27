@@ -1,0 +1,201 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.DigitalOut.js"></script>
+<script type="text/javascript" src="../mbed.DigitalIn.js"></script>
+<script type="text/javascript" src="../mbed.AnalogOut.js"></script>
+<script type="text/javascript" src="../mbed.AnalogIn.js"></script>
+<script type="text/javascript" src="../mbed.BusOut.js"></script>
+<script type="text/javascript" src="../mbed.BusIn.js"></script>
+<script type="text/javascript" src="../mbed.BusInOut.js"></script>
+<script type="text/javascript" src="../mbed.PortOut.js"></script>
+<script type="text/javascript" src="../mbed.Portin.js"></script>
+<script type="text/javascript" src="../mbed.PwmOut.js"></script>
+<script type="text/javascript" src="../mbed.SPI.js"></script>
+<script type="text/javascript" src="../mbed.SPISlave.js"></script>
+<script type="text/javascript" src="../mbed.Serial.js"></script>
+<script type="text/javascript" src="../mbed.I2C.js"></script>
+<script type="text/javascript" src="../mbed.I2CSlave.js"></script>
+<script type="text/javascript">
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	log();
+	log("ASYNC");
+	var st=0;
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var i2c=new mbedJS.I2CSlave(mcu,[mbedJS.PinName.p28,mbedJS.PinName.p27],{
+			onNew:function(){
+				log("[PASS]onNew");
+				i2c.frequency(100000);
+			},
+			onFrequency:function()
+			{
+				log("[PASS]onFrequency:");
+				i2c.address(1);
+			},
+			onAddress:function()
+			{
+				log("[PASS]onAddress:");
+				i2c.receive();
+			},
+			onReceive:function(){
+				log("[PASS]onReceive:");
+				st=0;
+				i2c.write(1);
+//				i2c.write(1);
+			},
+			onWrite:function(v){
+				log("[PASS]onWrite:"+v);
+				if(st==0){
+					i2c.write([1,2,3]);
+					st++;
+				}else{
+					i2c.read();
+					st=0;
+				}
+			},
+			onRead:function(v){
+				if(st==0){
+					log("[PASS]onRead:"+v);
+					i2c.read(2,false);
+					st++;
+				}else{
+					log("[PASS]onRead:"+v.ret+":"+v.data);
+					i2c.stop();
+				}
+
+			},
+			onStop:function(){
+				log("[PASS]onStop:");
+				mcu.close();
+			}
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function async()
+{
+	log();
+	log("ASYNC");
+	var st=0;
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var i2c=new mbedJS.I2CSlave(mcu,[mbedJS.PinName.p28,mbedJS.PinName.p27],function(){
+				log("[PASS]onNew");
+				i2c.frequency(100000,function()
+				{
+					log("[PASS]onFrequency:");
+					i2c.address(1,function()
+					{
+						log("[PASS]onAddress:");
+						i2c.receive(function(){
+							log("[PASS]onReceive:");
+							i2c.write(1,function(v){
+								log("[PASS]onWrite:"+v);
+								i2c.write([1,2,3],function(v){
+									log("[PASS]onWrite:"+v);
+									i2c.read(function(v){
+										log("[PASS]onRead:"+v);
+										i2c.read(2,false,function(v){
+											log("[PASS]onRead:"+v.ret+":"+v.data);
+											i2c.stop(function(){
+												log("[PASS]onStop:");
+												mcu.close();
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+
+/**
+ * 
+ */
+function sync()
+{
+	log();
+	alert(mbedJS.I2CSlave.RxStatus.NoData);
+	var g=function*(){
+	try{
+		var v;
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var i2c=new mbedJS.I2CSlave(mcu,[mbedJS.PinName.p28,mbedJS.PinName.p27],g);
+		yield i2c.waitForNew();
+		yield i2c.frequency(100000);
+		log("[PASS]onFrequency:");
+		yield i2c.address(1);
+		log("[PASS]onAddress:");
+		v=yield i2c.receive();
+		log("[PASS]onReceive:"+v);
+		v=yield i2c.write(1);
+		log("[PASS]onWrite:"+v);
+		v=yield i2c.write([1,2,3]);
+		log("[PASS]onWrite:"+v);
+		v=yield i2c.read();
+		log("[PASS]onRead:"+v);
+		v=yield i2c.read(2,false);
+		log("[PASS]onRead:"+v.ret+":"+v.data);
+		yield i2c.stop();
+		yield mcu.close();
+		log("[PASS]onstop");
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>I2CSlave test</h1>
+<hr/>
+<button onclick="async();">ASYNC2</button>
+<button onclick="async();">ASYNC</button>
+<button onclick="sync();">SYNC</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

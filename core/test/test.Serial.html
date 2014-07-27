@@ -1,0 +1,200 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.DigitalOut.js"></script>
+<script type="text/javascript" src="../mbed.DigitalIn.js"></script>
+<script type="text/javascript" src="../mbed.AnalogOut.js"></script>
+<script type="text/javascript" src="../mbed.AnalogIn.js"></script>
+<script type="text/javascript" src="../mbed.BusOut.js"></script>
+<script type="text/javascript" src="../mbed.BusIn.js"></script>
+<script type="text/javascript" src="../mbed.BusInOut.js"></script>
+<script type="text/javascript" src="../mbed.PortOut.js"></script>
+<script type="text/javascript" src="../mbed.Portin.js"></script>
+<script type="text/javascript" src="../mbed.PwmOut.js"></script>
+<script type="text/javascript" src="../mbed.SPI.js"></script>
+<script type="text/javascript" src="../mbed.SPISlave.js"></script>
+<script type="text/javascript" src="../mbed.Serial.js"></script>
+<script type="text/javascript">
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var uart=new mbedJS.Serial(mcu,[mbedJS.PinName.p9,mbedJS.PinName.p10],{
+			onNew:function(){
+				log("[PASS]onNew");
+				uart.baud(115200);
+			},
+			onBaud:function()
+			{
+				log("[PASS]onBaud:");
+				uart.send_break();
+			},
+			onSend_break:function(){
+				log("[PASS]onSend_break:");
+				uart.format(8,mbedJS.Serial.Parity.None,1);
+			},
+			onFormat:function(){
+				log("[PASS]onForma:");
+				uart.readable();
+			},
+			onReadable:function(v){
+				log("[PASS]onReadable:"+v);
+				uart.writeable();
+			},
+			onWriteable:function(v){
+				log("[PASS]onWritable:"+v);
+				uart.putc(32);
+			},
+			onPutc:function(v){
+				log("[PASS]onPutc:"+v);
+				uart.getc();
+			},
+			onGetc:function(v){
+				log("[PASS]onGetc:"+v);
+				uart.puts("1234");
+			},
+			onPuts:function(v){
+				log("[PASS]onPuts:"+v);
+				uart.gets(5);
+			},
+			onGets:function(v){
+				log("[PASS]onGets:");
+				mcu.close();
+			}
+			
+			
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function async2()
+{
+	log();
+	log("ASYNC2");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var uart=new mbedJS.Serial(mcu,[mbedJS.PinName.p9,mbedJS.PinName.p10],
+			function(){
+				log("[PASS]onNew");
+				uart.baud(115200,function()
+				{
+					log("[PASS]onBaud:");
+					uart.send_break(function(){
+						log("[PASS]onSend_break:");
+						uart.format(8,mbedJS.Serial.Parity.None,1,function(){
+							log("[PASS]onForma:");
+							uart.readable(function(v){
+								log("[PASS]onReadable:"+v);
+								uart.writeable(function(v){
+									log("[PASS]onWritable:"+v);
+									uart.putc(32,function(v){
+										log("[PASS]onPutc:"+v);
+										uart.getc(function(v){
+											log("[PASS]onGetc:"+v);
+											uart.puts("1234",function(v){
+												log("[PASS]onPuts:"+v);
+												uart.gets(5,function(v){
+													log("[PASS]onGets:"+v);
+													mcu.close();
+												});
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});				
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+/**
+ * 
+ */
+function sync()
+{
+	log();
+	var g=function*(){
+	try{
+		var v;
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var uart=new mbedJS.Serial(mcu,[mbedJS.PinName.p9,mbedJS.PinName.p10],g);
+		log(1);
+		yield uart.waitForNew();
+		log(2);
+		yield uart.baud(115200);
+		log("[PASS]onBaud:");
+		yield uart.send_break();
+		log("[PASS]onSend_break:");
+		yield uart.format(8,mbedJS.Serial.Parity.None,1);
+		log("[PASS]onForma:");
+		v=yield uart.readable();
+		log("[PASS]onReadable:"+v);
+		v=yield uart.writeable();
+		log("[PASS]onWritable:"+v);
+		v=yield uart.putc(32);
+		log("[PASS]onPutc:"+v);
+		v=yield uart.getc();
+		log("[PASS]onGetc:"+v);
+		v=yield uart.puts("1234");
+		log("[PASS]onPuts:"+v);
+		v=yield uart.gets(5);
+		log("[PASS]onGets:"+v);
+		yield mcu.close();
+		log(5);
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+</script>
+</head>
+<body>
+<h1>Serial test</h1>
+<hr/>
+<button onclick="async2();">ASYNC2</button>
+<button onclick="async();">ASYNC</button>
+<button onclick="sync();">SYNC</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

@@ -1,0 +1,168 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.DigitalOut.js"></script>
+<script type="text/javascript" src="../mbed.DigitalIn.js"></script>
+<script type="text/javascript" src="../mbed.AnalogOut.js"></script>
+<script type="text/javascript" src="../mbed.AnalogIn.js"></script>
+<script type="text/javascript" src="../mbed.BusOut.js"></script>
+<script type="text/javascript" src="../mbed.BusIn.js"></script>
+<script type="text/javascript" src="../mbed.BusInOut.js"></script>
+<script type="text/javascript" src="../mbed.PortOut.js"></script>
+<script type="text/javascript" src="../mbed.Portin.js"></script>
+<script type="text/javascript" src="../mbed.PwmOut.js"></script>
+<script type="text/javascript" src="../mbed.SPI.js"></script>
+<script type="text/javascript" src="../mbed.SPISlave.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var pin=new mbedJS.SPISlave(mcu,[mbedJS.PinName.p5,mbedJS.PinName.p6,mbedJS.PinName.p7,mbedJS.PinName.p8],{
+			onNew:function(){
+				log("[PASS]onNew");
+				pin.frequency(1000000);
+			},
+			onFrequency:function()
+			{
+				log("[PASS]onFrequency:");
+				pin.format(8,3);
+			},
+			onFormat:function()
+			{
+				log("[PASS]onFormat:");
+				pin.read();
+			},
+			onRead:function(v){
+				log("[PASS]onread:"+v);
+				pin.receive();
+			},
+			onReceive:function(v)
+			{
+				log("[PASS]onReceive:"+v);
+				pin.reply(1);
+			},
+			onReply:function(){
+				log("[PASS]onReply:");
+				mcu.close();
+			}
+			
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+
+function async2()
+{
+	log();
+	log("ASYNC2");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var pin=new mbedJS.SPISlave(mcu,[mbedJS.PinName.p5,mbedJS.PinName.p6,mbedJS.PinName.p7,mbedJS.PinName.p8],function(){
+				log("[PASS]onNew");
+				pin.frequency(1000000,function()
+				{
+					log("[PASS]onFrequency:");
+					pin.format(8,3,function()
+					{
+						log("[PASS]onFormat:");
+						pin.read(function(v){
+							log("[PASS]onread:"+v);
+							pin.receive(function(v)
+							{
+								log("[PASS]onReceive:"+v);
+								pin.reply(1,function(){
+									log("[PASS]onReply:");
+									mcu.close();
+								});
+							});
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+
+
+/**
+ * 
+ */
+function sync()
+{
+	log();
+	var g=function*(){
+	try{
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var pin=new mbedJS.SPISlave(mcu,[mbedJS.PinName.p5,mbedJS.PinName.p6,mbedJS.PinName.p7,mbedJS.PinName.p8],g);
+		yield pin.waitForNew();
+		log("[PASS]New");
+		yield pin.frequency(1000000);
+		log("[PASS]Frequency:");
+		yield pin.format(8,3);
+		log("[PASS]Format:");
+		var v=yield pin.read();
+		log("[PASS]Read:"+v);
+		v=yield pin.receive();
+		log("[PASS]Receive:"+v);
+		yield pin.reply(1);
+		log("[PASS]Reply:");
+		yield mcu.close();
+		log("close");
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>SPISlave test</h1>
+<hr/>
+<button onclick="async2();">ASYNC2</button>
+<button onclick="async();">ASYNC</button>
+<button onclick="sync();">SYNC</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

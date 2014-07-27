@@ -1,0 +1,218 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.DigitalIn.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			log("[PASS]onNew");
+			mcu.getInfo();
+		},
+		onGetInfo:function(v){
+			log("[PASS]onGetInfo:"+v.version+","+v.platform+","+v.mcu.name+","+v.mcu.eth+","+v.memory.free);
+			var pin=new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,{
+				onNew:function(){
+					log("...");
+					mcu.disposeObject(pin._oid);
+				}});
+		},
+		onDisposeObject:function(v){
+			log("[PASS]onDisposeObject:"+v);
+			mcu.close();
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function async2()
+{
+	log();
+	log("ASYNC2");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			log("[PASS]onNew");
+			mcu.getInfo(function(v){
+				log("[PASS]onGetInfo:"+v.version+","+v.platform+","+v.mcu.name+","+v.mcu.eth+","+v.memory.free);
+				var pin=new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,function(){
+					log("...");
+					mcu.disposeObject(pin._oid,function(v){
+						log("[PASS]onDisposeObject:"+v);
+						mcu.close();
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function dispose1()
+{
+	log();
+	log("d1");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			log("[PASS]onNew");
+			var pin=new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,function(){
+				pin.dispose(function(v){
+					log("[PASS]onDispose:"+v);
+					mcu.close();
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function dispose2()
+{
+	log();
+	log("d1");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			log("[PASS]onNew");
+			var pin=new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,{
+				onNew:function(){
+					log("[PASS]onNew:");
+					pin.dispose();
+				},
+				onDispose:function(v){
+					log("[PASS]onDispose:"+v);
+				mcu.close();
+				}
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function dispose3()
+{
+	log();
+	log("d3");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			log("[PASS]onNew");
+			var pin=new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,{
+				onNew:function(){
+					log("[PASS]onNew:");
+					pin.dispose();
+					mcu.close();
+				}
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function dispose4()
+{
+	var g=function*(){
+	try{
+		log();
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		log(2);
+		var v;
+		yield mcu.waitForNew();
+		var pin= new mbedJS.DigitalIn(mcu,mbedJS.PinName.P0_22,g);
+		yield pin.waitForNew();
+		v=yield pin.dispose();
+		log("[PASS]dispose:"+v);
+		yield mcu.close();
+		log("[PASS]close");
+	}catch(e){
+		alert(e);
+		mcu.shutdown();
+	}
+	}();
+	g.next();
+}
+/**
+ * 誤った使用方法でExceptionが出た場合にシャットダウンできるかのテスト
+ */
+function sync()
+{
+	var g=function*(){
+try{
+log();
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+log(2);
+var v;
+		yield mcu.waitForNew();
+		v=yield mcu.disposeObject(0);
+		log(v);
+		v=yield mcu.getInfo();
+		log("[PASS]onGetInfo:"+v.version+","+v.platform+","+v.mcu.name+","+v.mcu.eth+","+v.memory.free);
+		yield mcu.close();
+log(3);
+}catch(e){
+	alert(e);
+	mcu.shutdown();
+}
+	}();
+	g.next();
+	return;
+
+}
+
+
+</script>
+</head>
+<body>
+<h1>MCU test</h1>
+<hr/>
+<button onclick="async();">ASYNC</button>
+<button onclick="async2();">ASYNC2</button>
+<button onclick="sync();">SYNC</button>
+<button onclick="dispose1();">D1</button>
+<button onclick="dispose2();">D2</button>
+<button onclick="dispose3();">D3</button>
+<button onclick="dispose4();">D4</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

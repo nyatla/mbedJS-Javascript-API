@@ -1,0 +1,220 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.Memory.js"></script>
+
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	var s=0;
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var mem=new mbedJS.Memory(mcu,{
+			onNew:function(){
+				s=0;
+				mem.write(0x20080000,1);
+			},
+			onWrite:function(){
+				log("[PASS]onWrite:"+s);
+				switch(s){
+				case 0:
+					mem.read(0x20080000,1);
+					break;
+				case 1:
+					mem.read(0x20080001,1);
+					break;
+				case 2:
+					mem.read(0x20080000,8);
+					break;
+				}
+			},
+			onRead:function(v){
+				log("[PASS]onRead:"+s);
+				switch(s){
+				case 0:
+					mem.write(0x20080001,[2]);
+					break;
+				case 1:
+					mem.write(0x20080004,[10,20,30]);
+					break;
+				case 2:
+					mem.write32(0x20080000,0xff);
+					s=-1;
+				}
+				s++;
+			},
+			onWrite32:function(){
+				log("[PASS]onWrite32:"+s);
+				switch(s){
+				case 0:
+					mem.read32(0x20080000);
+					break;
+				case 1:
+					mem.read32(0x20080004,4);
+					break;
+				case 2:
+					mem.read32(0x20080000,16);
+					break;
+				}
+			},
+			onRead32:function(v){
+				log("[PASS]onRead32:"+s);
+				switch(s){
+				case 0:
+					mem.write32(0x20080004,[2]);
+					break;
+				case 1:
+					mem.write32(0x20080004,[10,20,30]);
+					break;
+				case 2:
+					mcu.close();
+				}
+				s++;
+			}			
+			
+			
+			
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+
+function async2()
+{
+	var s=0;
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var mem=new mbedJS.Memory(mcu,function(){
+				mem.write(0x20080000,1,function(){
+					log("[PASS]onWrite:");
+					mem.read(0x20080000,1,function(v){
+						log("[PASS]onRead:"+v);
+						mem.read(0x20080001,1,function(v){
+							log("[PASS]onRead:"+v);
+							mem.read(0x20080000,8,function(v){
+								log("[PASS]onRead:"+v);
+								mem.write(0x20080001,[2],function(){
+									log("[PASS]onWrite:");
+									mem.write(0x20080004,[10,20,30],function(){
+										log("[PASS]onWrite:");
+										mem.write32(0x20080000,0xff,function(){
+											log("[PASS]onWrite32:");
+											mem.read32(0x20080000,function(v){
+												log("[PASS]onRead32:"+v);
+												mem.read32(0x20080004,4,function(v){
+													log("[PASS]onRead32:"+v);
+													mem.read32(0x20080000,16,function(v){
+													log("[PASS]onRead32:"+v);
+														mem.write32(0x20080004,[2],function(){
+															log("[PASS]onWrite32:"+s);
+															mem.write32(0x20080004,[10,20,30],function(){
+																mcu.close();
+															});
+														});
+													});
+												});
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function sync()
+{
+	log();
+	var g=function*(){
+	try{
+		var v;
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var mem=new mbedJS.Memory(mcu,g);
+		yield mem.waitForNew();
+		yield mem.write(0x20080000,1);
+		log("[PASS]onWrite:");
+		v=yield mem.read(0x20080000,1);
+		log("[PASS]onRead:"+v);
+		v=yield mem.read(0x20080001,1);
+		log("[PASS]onRead:"+v);
+		v=yield mem.read(0x20080000,8);
+		log("[PASS]onRead:"+v);
+		yield mem.write(0x20080001,[2]);
+		log("[PASS]onWrite:");
+		yield mem.write(0x20080004,[10,20,30]);
+		log("[PASS]onWrite:");
+		yield mem.write32(0x20080000,0xff);
+		log("[PASS]onWrite32:");
+		v=yield mem.read32(0x20080000);
+		log("[PASS]onRead32:"+v);
+		v=yield mem.read32(0x20080004,4);
+		log("[PASS]onRead32:"+v);
+		v=yield mem.read32(0x20080000,16);
+		log("[PASS]onRead32:"+v);
+		yield mem.write32(0x20080004,[2]);
+		log("[PASS]onWrite32:");
+		yield mem.write32(0x20080004,[10,20,30]);
+		log("[PASS]onWrite32:");
+		mcu.close();
+
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+</script>
+</head>
+<body>
+<h1>Memory test</h1>
+<hr/>
+<button onclick="async();">ASYNC</button>
+<button onclick="async2();">ASYNC2</button>
+<button onclick="sync();">SYNC</button>
+<button onclick="sync2();">SYNC2</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

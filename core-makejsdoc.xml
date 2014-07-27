@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+
+<project default="mimic">
+    <target name="mimic">
+	
+	<property name="JSDKANT" value="D:\application.files\jsdoc-toolkit-ant-task"/>
+	<property name="JSDK" value="D:\application.files\jsdoc_toolkit-2.4.0\jsdoc-toolkit"/>
+	<property name="SRC_ROOT" value="D:\project.sourceforge\MiMic\trunk\misc\mbedJS\mbddJS.API\mbedJS"/>
+	<property name="DEST_ROOT" value="D:\project.sourceforge\MiMic\document\mbedJS.javadoc"/>
+	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
+	          classpath="${JSDKANT}\jsdoc-toolkit-ant-task-1.1.2.jar;${JSDK}\java\classes\js.jar" />
+	<jsdoctoolkit jsdochome="${JSDK}\"  outputdir="${DEST_ROOT}" template="mimic">
+		<source file="${SRC_ROOT}\mbed.AnalogIn.js" />
+		<source file="${SRC_ROOT}\mbed.AnalogOut.js" />
+		<source file="${SRC_ROOT}\mbed.BusIn.js" />
+		<source file="${SRC_ROOT}\mbed.BusInOut.js" />
+		<source file="${SRC_ROOT}\mbed.BusOut.js" />
+		<source file="${SRC_ROOT}\mbed.DigitalIn.js" />
+		<source file="${SRC_ROOT}\mbed.DigitalOut.js" />
+		<source file="${SRC_ROOT}\mbed.Mcu.js" />
+		<source file="${SRC_ROOT}\mbed.PortIn.js" />
+		<source file="${SRC_ROOT}\mbed.PortOut.js" />
+		<source file="${SRC_ROOT}\mbed.PwmOut.js" />
+		<source file="${SRC_ROOT}\mbed.SPI.js" />
+		<source file="${SRC_ROOT}\mbed.SPISlave.js" />
+		<source file="${SRC_ROOT}\mbed.types.js" />
+		<source file="${SRC_ROOT}\MiMicCore.js" />		
+		<source file="${SRC_ROOT}\mbed.Memory.js" />		
+		<source file="${SRC_ROOT}\mbed.Serial.js" />		
+		<source file="${SRC_ROOT}\mbed.I2C.js" />
+		<source file="${SRC_ROOT}\mbed.I2CSlave.js" />
+	</jsdoctoolkit>
+    </target>
+</project>

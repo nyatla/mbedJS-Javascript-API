@@ -1,0 +1,150 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../mbed.types.js"></script>
+<script type="text/javascript" src="../MiMicCore.js"></script>
+<script type="text/javascript" src="../mbed.Mcu.js"></script>
+<script type="text/javascript" src="../mbed.DigitalOut.js"></script>
+<script type="text/javascript" src="../mbed.DigitalIn.js"></script>
+<script type="text/javascript" src="../mbed.AnalogOut.js"></script>
+<script type="text/javascript" src="../mbed.AnalogIn.js"></script>
+<script type="text/javascript" src="../mbed.BusOut.js"></script>
+<script type="text/javascript" src="../mbed.BusIn.js"></script>
+<script type="text/javascript" src="../mbed.BusInOut.js"></script>
+<script type="text/javascript" src="../mbed.PortOut.js"></script>
+<script type="text/javascript" src="../mbed.Portin.js"></script>
+<script type="text/javascript" src="../mbed.PwmOut.js"></script>
+<script type="text/javascript" src="../mbed.SPI.js"></script>
+<script type="text/javascript" src="../mbed.SPISlave.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+
+/**ASYNCAPIのテスト*/
+function async()
+{
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var pin=new mbedJS.AnalogOut(mcu,mbedJS.PinName.p18,{
+			onNew:function(){
+				log("[PASS]onNew");
+				pin.write(0.5);
+			},
+			onWrite:function()
+			{
+				log("[PASS]onWrite");
+				pin.read();
+				
+			},
+			onRead:function(v)
+			{
+				log("[PASS]onread:"+v);
+				pin.write_u16(0);
+			},
+			onWrite_u16:function()
+			{
+				log("[PASS]onWrite_u16:");
+				mcu.close();
+			}
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function async2()
+{
+	log();
+	log("ASYNC");
+	var mcu=new mbedJS.Mcu("192.168.128.39",
+	{
+		onNew:function(){
+			var pin=new mbedJS.AnalogOut(mcu,mbedJS.PinName.p18,function(){
+				log("[PASS]onNew");
+				pin.write(0.5,function()
+				{
+					log("[PASS]onWrite");
+					pin.read(function(v)
+					{
+						log("[PASS]onread:"+v);
+						pin.write_u16(0,function()
+						{
+							log("[PASS]onWrite_u16:");
+							mcu.close();
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+/**
+ * 誤った使用方法でExceptionが出た場合にシャットダウンできるかのテスト
+ */
+function sync()
+{
+	log();
+	var g=function*(){
+	try{
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var pin=new mbedJS.AnalogOut(mcu,mbedJS.PinName.p18,g);
+		log("new");
+		yield pin.waitForNew();
+		log("waitfor");
+		v=yield pin.write(0.3);
+		log("write");
+		var v=yield pin.read();
+		log("read:"+v);
+		v=yield pin.write_u16(1000);
+		log("write16");
+		var v=yield pin.read();
+		log("read:"+v);
+		yield mcu.close();
+		log("close");
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>Analogout test</h1>
+<hr/>
+<button onclick="async();">ASYNC</button>
+<button onclick="async2();">ASYNC2</button>
+<button onclick="sync();">SYNC</button>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>
