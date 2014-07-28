@@ -1,0 +1,145 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../release/mbedJS.all.js"></script>
+<script type="text/javascript" src="../MMA8451Q.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+var I2C_ADDR=0x3A;
+/**ASYNCAPIのテスト*/
+function callback_test()
+{
+	log();
+	log("callback_test");
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],{
+			onNew:function(){
+				log("[PASS]onNew");
+				dev.getWhoAmI();
+			},
+			onGetWhoAmI:function(v){
+				log("[PASS]onGetWhoAmI:"+v);
+				dev.getAccX();
+			},
+			onGetAccX:function(v){
+				log("[PASS]onGetAccX:"+v);
+				dev.getAccY();
+			},
+			onGetAccY:function(v){
+				log("[PASS]onGetAccY:"+v);
+				dev.getAccZ();
+			},
+			onGetAccZ:function(v){
+				log("[PASS]onGetAccZ:"+v);
+				dev.getAccAllAxis();
+			},
+			onGetAccAllAxis:function(v5){
+				log("[PASS]onGetAccAllAxis:"+v5.x+","+v5.y+","+v5.z);
+				mcu.close();
+			}			
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function callback_hell_test()
+{
+	log();
+	log("callback_hell_test");
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],function(){
+				log("[PASS]onNew");
+				dev.getWhoAmI(function(v1){
+					log("[PASS]onGetWhoAmI:"+v1);
+					dev.getAccX(function(v2){
+						log("[PASS]onGetAccX:"+v2);
+						dev.getAccY(function(v3){
+							log("[PASS]onGetAccY:"+v3);
+							dev.getAccZ(function(v4){
+								log("[PASS]onGetAccZ:"+v4);
+								dev.getAccAllAxis(function(v5){
+									log("[PASS]onGetAccAllAxis:"+v5.x+","+v5.y+","+v5.z);
+									mcu.close();
+								});
+							});
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+/**
+ * Sync
+ */
+function generator_test()
+{
+	log();
+	var g=function*(){
+	try{
+		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		yield mcu.waitForNew();
+		var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],g);
+		yield dev.waitForNew();
+		log("[PASS]onNew");
+		var v;
+		v=yield dev.getWhoAmI();
+		log("[PASS]onGetWhoAmI:"+v);
+		v=yield dev.getAccX();
+		log("[PASS]onGetAccX:"+v);
+		v=yield dev.getAccY();
+		log("[PASS]onGetAccY:"+v);
+		v=yield dev.getAccZ();
+		log("[PASS]onGetAccZ:"+v);
+		v=yield dev.getAccAllAxis();
+		log("[PASS]onGetAccAllAxis:"+v.x+","+v.y+","+v.z);
+		yield mcu.close();
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>MMA8451Q test</h1>
+<hr/>
+<input type="text" id="addr" value="192.168.128.39"></input>
+<button onclick="callback_test();">callback</button>
+<button onclick="callback_hell_test();">callback_hell</button>
+<button onclick="generator_test();">generator</button><br/>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

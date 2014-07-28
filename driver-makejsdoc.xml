@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+
+<project default="driver">
+    <target name="driver">
+	
+	<property name="JSDKANT" value="D:\application.files\jsdoc-toolkit-ant-task"/>
+	<property name="JSDK" value="D:\application.files\jsdoc_toolkit-2.4.0\jsdoc-toolkit"/>
+	<property name="SRC_ROOT" value="D:\project.github\mbedJS-Javascript-API\driver"/>
+	<property name="DEST_ROOT" value="D:\project.github\mbedJS-Javascript-API\release\jsdoc.driver"/>
+	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
+	          classpath="${JSDKANT}\jsdoc-toolkit-ant-task-1.1.2.jar;${JSDK}\java\classes\js.jar" />
+	<jsdoctoolkit jsdochome="${JSDK}\" outputdir="${DEST_ROOT}" template="mimic">
+		<source file="${SRC_ROOT}\MMA8451Q.js" />
+	</jsdoctoolkit>
+    </target>
+</project>

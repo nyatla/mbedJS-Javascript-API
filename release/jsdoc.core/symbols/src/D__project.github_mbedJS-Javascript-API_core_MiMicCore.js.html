@@ -1,0 +1,698 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * @fileOverview 低レベルAPIを定義する。低レベルAPIは、MiMicRemoteMcuをインストールしたMCUとの通信クラスを提供する。
+<span class='line'>  3</span>  */</span><span class="WHIT">
+<span class='line'>  4</span> 
+<span class='line'>  5</span> </span><span class="COMM">/**
+<span class='line'>  6</span>  * MiMicネームスペース
+<span class='line'>  7</span>  * @namespace
+<span class='line'>  8</span>  */</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">MiMicJS</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 10</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">NS</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 13</span> 	 * MiMicJsAPIのバージョン文字列。
+<span class='line'> 14</span> 	 * @name MiMicJS#VERSION
+<span class='line'> 15</span> 	 */</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="NAME">NS.VERSION</span><span class="PUNC">=</span><span class="STRN">"MiMicJsAPI/2.0.3"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 17</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 18</span> 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
+<span class='line'> 19</span> 	 * @name MiMicJS.assertInt
+<span class='line'> 20</span> 	 * @function
+<span class='line'> 21</span> 	 * @param {[array]} v
+<span class='line'> 22</span> 	 * テストする配列
+<span class='line'> 23</span> 	 */</span><span class="WHIT">
+<span class='line'> 24</span> </span><span class="WHIT">	</span><span class="NAME">NS.assertInt</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">assertInt</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">NS.isArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">NS.isInt</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">v.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">NS.isInt</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">				</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="STRN">'"'</span><span class="PUNC">+</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">'" is not integer.'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 36</span> 	 * 配列要素、、又は値がすべて数値でない場合に例外を起こします。
+<span class='line'> 37</span> 	 * @name MiMicJS.assertNumber
+<span class='line'> 38</span> 	 * @function
+<span class='line'> 39</span> 	 * @param {[array]} v
+<span class='line'> 40</span> 	 * テストする配列
+<span class='line'> 41</span> 	 */</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">	</span><span class="NAME">NS.assertNumber</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">assertNumber</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">NS.isArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">NS.isNumber</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">	</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">			</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">v.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">NS.isNumber</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">					</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="STRN">'"'</span><span class="PUNC">+</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">'" is not number.'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 55</span> 	 * @private
+<span class='line'> 56</span> 	 */</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">	</span><span class="NAME">NS.isUndefined</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">,</span><span class="NAME">def</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">==</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">v</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">void</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">v</span><span class="WHIT"> </span><span class="PUNC">===</span><span class="WHIT"> </span><span class="KEYW">void</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">def</span><span class="PUNC">:</span><span class="NAME">v</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 62</span> 	 * 数値であるかを確認します。
+<span class='line'> 63</span> 	 * @private
+<span class='line'> 64</span> 	 */</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">	</span><span class="NAME">NS.isNumber</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isNumber</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">==</span><span class="STRN">'number'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 70</span> 	 * 整数であるかを確認します。
+<span class='line'> 71</span> 	 * @private
+<span class='line'> 72</span> 	 */</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">	</span><span class="NAME">NS.isInt</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isInt</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">o</span><span class="PUNC">==</span><span class="STRN">'number'</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">-</span><span class="NAME">Math.round</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> 
+<span class='line'> 78</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 79</span> 	 * オブジェクトがジェネレータクラスであるかを返します。
+<span class='line'> 80</span> 	 * @private
+<span class='line'> 81</span> 	 */</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">	</span><span class="NAME">NS.isGenerator</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isGenerator</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">o.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">indexOf</span><span class="PUNC">(</span><span class="STRN">'Generator'</span><span class="PUNC">)</span><span class="PUNC">!=</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 88</span> 	 * オブジェクトが関数であるかを返します。
+<span class='line'> 89</span> 	 * @private
+<span class='line'> 90</span> 	 */</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">	</span><span class="NAME">NS.isFunction</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isFunction</span><span class="PUNC">(</span><span class="NAME">o</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">o</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 95</span> 	 * @private
+<span class='line'> 96</span> 	 * 現在の時刻を返します。
+<span class='line'> 97</span> 	 */</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">	</span><span class="NAME">NS.getNow</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">getNow</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Date</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">getTime</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>102</span> 	 * @private
+<span class='line'>103</span> 	 * aが配列であるかを返します。
+<span class='line'>104</span> 	 */</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">	</span><span class="NAME">NS.isArray</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isArray</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">a</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>109</span> 	 * @private
+<span class='line'>110</span> 	 * aが配列であるかを返します。
+<span class='line'>111</span> 	 */</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">	</span><span class="NAME">NS.isHashArray</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">isHashArray</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="PUNC">(</span><span class="NAME">a</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">a</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">"object"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>116</span> 	 * 連想配列をシャローコピーして複製します。
+<span class='line'>117</span> 	 * @private
+<span class='line'>118</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">	</span><span class="NAME">NS.cloneAssoc</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">cloneAssoc</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			</span><span class="NAME">r</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">=</span><span class="NAME">a</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>128</span> 	 * @private
+<span class='line'>129</span> 	 * 桁数を指定して、int値を16進数に変換します。
+<span class='line'>130</span> 	 * @param {int} i_val
+<span class='line'>131</span> 	 * 変換する値
+<span class='line'>132</span> 	 * @param {int} i_digit
+<span class='line'>133</span> 	 * 桁数
+<span class='line'>134</span> 	 * @return {string}
+<span class='line'>135</span> 	 * 文字列形式の値
+<span class='line'>136</span> 	 */</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">	</span><span class="NAME">NS.hexout</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">hexout</span><span class="PUNC">(</span><span class="NAME">i_val</span><span class="PUNC">,</span><span class="NAME">i_digit</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">dt</span><span class="PUNC">=</span><span class="PUNC">[</span><span class="STRN">""</span><span class="PUNC">,</span><span class="STRN">"0"</span><span class="PUNC">,</span><span class="STRN">"00"</span><span class="PUNC">,</span><span class="STRN">"000"</span><span class="PUNC">,</span><span class="STRN">"0000"</span><span class="PUNC">,</span><span class="STRN">"00000"</span><span class="PUNC">,</span><span class="STRN">"000000"</span><span class="PUNC">,</span><span class="STRN">"0000000"</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">=</span><span class="PUNC">(</span><span class="NAME">i_val</span><span class="PUNC">>>></span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">toString</span><span class="PUNC">(</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">toLowerCase</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">s.length</span><span class="PUNC">></span><span class="NAME">i_digit</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">			</span><span class="COMM">//マイナスだともれなくエラー</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="NAME">EE.NG</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">l</span><span class="PUNC">=</span><span class="NAME">i_digit</span><span class="PUNC">-</span><span class="NAME">s.length</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">dt</span><span class="PUNC">[</span><span class="NAME">l</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="NAME">s</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>149</span> 	 * @private
+<span class='line'>150</span> 	 * 連想配列を文字列にして返します。
+<span class='line'>151</span> 	 */</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">	</span><span class="NAME">NS.assocToStr</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">assocToStr</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="NAME">k</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">s</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">k</span><span class="PUNC">+</span><span class="STRN">":"</span><span class="PUNC">+</span><span class="NAME">a</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">","</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>159</span> 	 * @private
+<span class='line'>160</span> 	 * 32bit値のエンディアンを交換します。
+<span class='line'>161</span> 	 * @param v
+<span class='line'>162</span> 	 * 交換する値
+<span class='line'>163</span> 	 * @return
+<span class='line'>164</span> 	 * 交換後の値
+<span class='line'>165</span> 	 */</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">	</span><span class="NAME">NS.bswap32</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">bswap32</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">&lt;&lt;</span><span class="NUMB">24</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0xff000000</span><span class="PUNC">)</span><span class="PUNC">|</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">&lt;&lt;</span><span class="NUMB">8</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0xff0000</span><span class="PUNC">)</span><span class="PUNC">|</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">>></span><span class="NUMB">8</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0xff00</span><span class="PUNC">)</span><span class="PUNC">|</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">>></span><span class="NUMB">24</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0xff</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>169</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>171</span> 	 * @private
+<span class='line'>172</span> 	 * バイナリ文字列をバイト値として配列に変換します。
+<span class='line'>173</span> 	 * @param v
+<span class='line'>174</span> 	 * 数値配列
+<span class='line'>175</span> 	 */</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">	</span><span class="NAME">NS.bstr2byteArray</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">bstr2byteArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>179</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">v.length</span><span class="PUNC">%</span><span class="NUMB">2</span><span class="PUNC">!=</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>181</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">v.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">			</span><span class="NAME">r.push</span><span class="PUNC">(</span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">v.substr</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">,</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>188</span> 	 * @private
+<span class='line'>189</span> 	 * バイナリ文字列を32bitUInt数値配列に変換します。
+<span class='line'>190</span> 	 * Uint値はLittleEndianとして解釈します。
+<span class='line'>191</span> 	 * @param {int[]} v
+<span class='line'>192</span> 	 * 数値配列
+<span class='line'>193</span> 	 */</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">	</span><span class="NAME">NS.bstr2uintArray</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">bstr2uintArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">v.length</span><span class="PUNC">%</span><span class="NUMB">8</span><span class="PUNC">!=</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">v.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NUMB">8</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">			</span><span class="NAME">r.push</span><span class="PUNC">(</span><span class="NAME">NS.bswap32</span><span class="PUNC">(</span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">v.substr</span><span class="PUNC">(</span><span class="NAME">i</span><span class="PUNC">,</span><span class="NUMB">8</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>204</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>205</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>206</span> 	 * ByteArrayをBinarayStringに変換します。
+<span class='line'>207</span> 	 * @name MiMicJS.byteArray2bstr
+<span class='line'>208</span> 	 * @function
+<span class='line'>209</span> 	 * @param v
+<span class='line'>210</span> 	 * @return {String}
+<span class='line'>211</span> 	 */</span><span class="WHIT">
+<span class='line'>212</span> </span><span class="WHIT">	</span><span class="NAME">NS.byteArray2bstr</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">byteArray2bstr</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>213</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>214</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">=</span><span class="NAME">NS.isArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">v</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>215</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>216</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">s.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>217</span> </span><span class="WHIT">			</span><span class="NAME">r</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">NS.hexout</span><span class="PUNC">(</span><span class="NAME">s</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>218</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>221</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>222</span> 	 * UInt32ArrayをBinarayStringに変換します。
+<span class='line'>223</span> 	 * 出力はLittleEndianの配列です。
+<span class='line'>224</span> 	 * @name MiMicJS.uintArray2bstr
+<span class='line'>225</span> 	 * @function
+<span class='line'>226</span> 	 * @param v
+<span class='line'>227</span> 	 * UInt32の配列
+<span class='line'>228</span> 	 * @return {String}
+<span class='line'>229</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>230</span> </span><span class="WHIT">	</span><span class="NAME">NS.uintArray2bstr</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">uintArray2bstr</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>231</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>232</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">=</span><span class="NAME">NS.isArray</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">v</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NAME">v</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>234</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">s.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>235</span> </span><span class="WHIT">			</span><span class="NAME">r</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">NS.hexout</span><span class="PUNC">(</span><span class="NAME">NS.bswap32</span><span class="PUNC">(</span><span class="NAME">s</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="NUMB">8</span><span class="PUNC">,</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>237</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">r</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>238</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>239</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>240</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>241</span> 	 * 連想配列の内容をルートオブジェクト直下に展開します。
+<span class='line'>242</span> 	 * この関数は名前空間を汚染します。十分に注意して使用してください。
+<span class='line'>243</span> 	 * @name MiMicJS.using
+<span class='line'>244</span> 	 * @function
+<span class='line'>245</span> 	 * @param {HashMap} v
+<span class='line'>246</span> 	 * 展開する連想配列
+<span class='line'>247</span> 	 * @example
+<span class='line'>248</span> 	 * MiMicJS.using(mbedJS);
+<span class='line'>249</span> 	 * MiMicJS.using(mbedJS.PinName);
+<span class='line'>250</span> 	 */</span><span class="WHIT">
+<span class='line'>251</span> </span><span class="WHIT">	</span><span class="NAME">NS.using</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">using</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>252</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>253</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">key</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>254</span> </span><span class="WHIT">			</span><span class="NAME">window</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">=</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NAME">key</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>255</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>256</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>257</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>258</span> 	 * MiMicSDK向けの内部関数です。
+<span class='line'>259</span> 	 * 末尾引数が関数の場合にはその関数を、異なる場合はi_cbを返却します。
+<span class='line'>260</span> 	 * @private
+<span class='line'>261</span> 	 * @param i_arg
+<span class='line'>262</span> 	 * 引数配列を指定します。
+<span class='line'>263</span> 	 * @param i_default_cb
+<span class='line'>264</span> 	 * 引数配列に関数がなかった場合に返す値を指定します。
+<span class='line'>265</span> 	 */</span><span class="WHIT">
+<span class='line'>266</span> </span><span class="WHIT">	</span><span class="NAME">NS._getCb</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_getCb</span><span class="PUNC">(</span><span class="NAME">i_arg</span><span class="PUNC">,</span><span class="NAME">i_default_cb</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>267</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>268</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">i_arg.length</span><span class="PUNC">==</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>269</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">i_default_cb</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>270</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>271</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">NS.isFunction</span><span class="PUNC">(</span><span class="NAME">i_arg</span><span class="PUNC">[</span><span class="NAME">i_arg.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">i_arg</span><span class="PUNC">[</span><span class="NAME">i_arg.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">:</span><span class="NAME">i_default_cb</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>272</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>273</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>274</span> 	 * MiMicSDK向けの関数です。
+<span class='line'>275</span> 	 * 末尾の拡張変数を取り除いたarguments引数の数を返します。
+<span class='line'>276</span> 	 * @private
+<span class='line'>277</span> 	 */</span><span class="WHIT">
+<span class='line'>278</span> </span><span class="WHIT">	</span><span class="NAME">NS._getBaseArgsLen</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_getBaseArgsLen</span><span class="PUNC">(</span><span class="NAME">i_arg</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>279</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>280</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">i_arg.length</span><span class="PUNC">==</span><span class="NUMB">0</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">NS.isFunction</span><span class="PUNC">(</span><span class="NAME">i_arg</span><span class="PUNC">[</span><span class="NAME">i_arg.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>281</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">i_arg.length</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>282</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>283</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">i_arg.length</span><span class="PUNC">==</span><span class="NUMB">1</span><span class="PUNC">?</span><span class="NUMB">0</span><span class="PUNC">:</span><span class="NAME">i_arg.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>284</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>285</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>286</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>287</span> 	 * MiMicSDK向けの関数です。
+<span class='line'>288</span> 	 * インスタンスがyieldコール可能かをチェックし、可能ならコール関数を記録します。
+<span class='line'>289</span> 	 * 関数は、インスタンスの_gen,_lcをチェックして、yieldが不可能な場合に例外を発生します。
+<span class='line'>290</span> 	 * _assertYield.call(this)でコールして下さい。
+<span class='line'>291</span> 	 * @private
+<span class='line'>292</span> 	 */</span><span class="WHIT">
+<span class='line'>293</span> </span><span class="WHIT">	</span><span class="NAME">NS._assertYield</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_assertYield</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>294</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>295</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._gen</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this._lc</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>296</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="NAME">NS.Error.NG_YIELD_NOT_COMPLETED</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>297</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>298</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>299</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>300</span> 	 * MiMicSDK向けの関数です。コンストラクタでイベントハンドラをセットアップする定型処理です。
+<span class='line'>301</span> 	 * i_handlerにセットされたオブジェクトに従って_gen,_eventメンバをセットします。
+<span class='line'>302</span> 	 * _initHandler.call(this,i_handler)でコールして下さい。
+<span class='line'>303</span> 	 * @private
+<span class='line'>304</span> 	 */</span><span class="WHIT">
+<span class='line'>305</span> </span><span class="WHIT">	</span><span class="NAME">NS._initHandler</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_initHandler</span><span class="PUNC">(</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>306</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>307</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">NS.isGenerator</span><span class="PUNC">(</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>308</span> </span><span class="WHIT">			</span><span class="NAME">this._gen</span><span class="PUNC">=</span><span class="NAME">i_handler</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>309</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">NS.isFunction</span><span class="PUNC">(</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">i_handler</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="WHIT">			</span><span class="NAME">this._event</span><span class="PUNC">=</span><span class="NAME">i_handler</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">i_handler.onNew</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>314</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>315</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>316</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>317</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>318</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>319</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>320</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>321</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>322</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">NS</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>323</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>324</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>325</span> 	 * MiMicExceptionが使用するエラーコードと、その判定関数を定義する。
+<span class='line'>326</span> 	 * エラーコードは、以下の形式の配列オブジェクトで表現する。
+<span class='line'>327</span> 	 * &lt;pre>
+<span class='line'>328</span> 	 * [code:int,message:string]
+<span class='line'>329</span> 	 * &lt;/pre>
+<span class='line'>330</span> 	 * 
+<span class='line'>331</span> 	 * codeは31ビットのエラーコードである。ビットフィールドの意味は以下の通りである。
+<span class='line'>332</span> 	 * &lt;table>
+<span class='line'>333</span> 	 * &lt;tr>&lt;th>bit&lt;/th>&lt;th>name&lt;/th>&lt;th>discription&lt;/th>&lt;/tr>
+<span class='line'>334</span> 	 * &lt;tr>&lt;td>30&lt;/td>&lt;td>ErrorBit&lt;/td>&lt;td>Error:1,OK:0&lt;/td>&lt;/tr>
+<span class='line'>335</span> 	 * &lt;tr>&lt;td>29-24&lt;/td>&lt;td>Reserved&lt;/td>&lt;td>-&lt;/td>&lt;/tr>
+<span class='line'>336</span> 	 * &lt;tr>&lt;td>23-16&lt;/td>&lt;td>ModuleID&lt;/td>&lt;td>0x00:unknown&lt;br/>0x39:MiMic&lt;br/>0xF0-0xFF: user define&lt;br/>Other:Reserved&lt;br/>&lt;/td>&lt;/tr>
+<span class='line'>337</span> 	 * &lt;tr>&lt;td>15-8&lt;/td>&lt;td>ClassID&lt;/td>&lt;td>0x00:unknown&lt;/td>&lt;/tr>
+<span class='line'>338</span> 	 * &lt;tr>&lt;td>7-0&lt;/td>&lt;td>ErrorID&lt;/td>&lt;td>&lt;/td>&lt;/tr>
+<span class='line'>339</span> 	 * &lt;/table>
+<span class='line'>340</span> 	 * @namespace
+<span class='line'>341</span> 	 * @name MiMicJS.Error
+<span class='line'>342</span> 	 * @example
+<span class='line'>343</span> 	 * throw new MiMicException(MiMicError.NG);
+<span class='line'>344</span> 	 */</span><span class="WHIT">
+<span class='line'>345</span> </span><span class="WHIT">	</span><span class="NAME">NS.Error</span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'>346</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>347</span> </span><span class="WHIT">		</span><span class="COMM">/** 成功を示します。
+<span class='line'>348</span> 		 * @constant
+<span class='line'>349</span> 		 * @name MiMicJS.Error.OK
+<span class='line'>350</span> 		 */</span><span class="WHIT">
+<span class='line'>351</span> </span><span class="WHIT">		</span><span class="NAME">OK</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NUMB">0x00000000</span><span class="PUNC">,</span><span class="STRN">"OK"</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>352</span> </span><span class="WHIT">		</span><span class="COMM">/** 詳細情報の無いエラーです。
+<span class='line'>353</span> 		 * @constant
+<span class='line'>354</span> 		 * @name MiMicJS.Error.NG
+<span class='line'>355</span> 		 */</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">		</span><span class="NAME">NG</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NUMB">0x40000000</span><span class="PUNC">,</span><span class="STRN">"NG"</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>357</span> </span><span class="WHIT">		</span><span class="COMM">/** Generatorを用いたコードで、前回のyieldが終了していないことを示します。
+<span class='line'>358</span> 		 * @constant
+<span class='line'>359</span> 		 * @name MiMicJS.Error.NG_YIELD_NOT_COMPLETED
+<span class='line'>360</span> 		 */</span><span class="WHIT">
+<span class='line'>361</span> </span><span class="WHIT">		</span><span class="NAME">NG_YIELD_NOT_COMPLETED</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NUMB">0x40001001</span><span class="PUNC">,</span><span class="STRN">"The previous function has not been completed."</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>362</span> </span><span class="WHIT">		</span><span class="COMM">/** 関数の呼び出し順序が正しくないことを示します。
+<span class='line'>363</span> 		 * @constant
+<span class='line'>364</span> 		 * @name MiMicJS.Error.NG_ILLEGAL_CALL
+<span class='line'>365</span> 		 */</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">		</span><span class="NAME">NG_ILLEGAL_CALL</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NUMB">0x40001002</span><span class="PUNC">,</span><span class="STRN">"Illegal procedure call."</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">		</span><span class="COMM">/** 引数型の不一致を検出したことを示します。
+<span class='line'>368</span> 		 * @constant
+<span class='line'>369</span> 		 * @name MiMicJS.Error.NG_INVALID_ARG
+<span class='line'>370</span> 		 */</span><span class="WHIT">
+<span class='line'>371</span> </span><span class="WHIT">		</span><span class="NAME">NG_INVALID_ARG</span><span class="PUNC">:</span><span class="PUNC">[</span><span class="NUMB">0x40001003</span><span class="PUNC">,</span><span class="STRN">"Invalid arguments."</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>372</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>373</span> 		 * エラーコードがOKか調べる。
+<span class='line'>374</span> 		 * @function
+<span class='line'>375</span> 		 * @name MiMicJS.Error.isOK
+<span class='line'>376</span> 		 * @param {Object as [MiMicErrorCode]} v
+<span class='line'>377</span> 		 * 評価するオブジェクト
+<span class='line'>378</span> 		 * @return {Boolean}
+<span class='line'>379</span> 		 * エラーコードでなければ、trueを返す。
+<span class='line'>380</span> 		 * @example
+<span class='line'>381</span> 		 * MiMicError.isOK(MiMicError.OK);//true
+<span class='line'>382</span> 		 */</span><span class="WHIT">
+<span class='line'>383</span> </span><span class="WHIT">		</span><span class="NAME">isOK</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>384</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">0x40000000</span><span class="WHIT"> </span><span class="PUNC">&</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">==</span><span class="NUMB">0x00000000</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>385</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>386</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>387</span> </span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>388</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>389</span> 
+<span class='line'>390</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>391</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">NS</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>393</span> 	 * 引数が1個のパターン。
+<span class='line'>394</span> 	 * @name MiMicJS.MiMicException:2
+<span class='line'>395</span> 	 * @function
+<span class='line'>396</span> 	 * @param {object} e
+<span class='line'>397</span> 	 * eのクラスにより、動作が異なる。
+<span class='line'>398</span> 	 * &lt;ul>
+<span class='line'>399</span> 	 * &lt;li>{string} - MiMicException(Error.NG,e)と等価である。&lt;/li>
+<span class='line'>400</span> 	 * &lt;li>{object as [MiMicErrorCode]} - エラーコードを指定して例外を生成する。エラーコードについては、MiMicJs.Errorを参照&lt;/li>
+<span class='line'>401</span> 	 * &lt;li>{object} - MiMicException(MiMicError.NG,e.toString())と等価である。objectを文字列化して例外を生成する。&lt;/li>
+<span class='line'>402</span> 	 * &lt;li>{MiMicException} - codeとmessageを継承して例外を生成する。コールスタックを生成するときは、このパターンを使うこと。&lt;/li>
+<span class='line'>403</span> 	 * &lt;/ul>
+<span class='line'>404</span> 	 * @example
+<span class='line'>405</span> 	 * throw new MiMicException(MiMicError.NG);
+<span class='line'>406</span> 	 * throw new MiMicException("Error");
+<span class='line'>407</span> 	 * try{
+<span class='line'>408</span> 	 * 	 throw new MiMicException("Error");
+<span class='line'>409</span> 	 * }catch(e){
+<span class='line'>410</span> 	 * 	 throw new MiMicException(e);
+<span class='line'>411</span> 	 * }
+<span class='line'>412</span> 	 */</span><span class="WHIT">
+<span class='line'>413</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>414</span> 	 * MiMic javascript APIが生成する例外クラスのコンストラクタである。関数ごとにMiMicExceptionを使ったtry-catchを導入することにより、例外発生時にスタックトレースメッセージを得ることが出来る。
+<span class='line'>415</span> 	 * スタックトレースは改行で連結された文字列である。messageプロパティに格納される。alert関数で表示することで、効率的なデバックが可能である。
+<span class='line'>416</span> 	 * 引数の違いにより、数種類の呼び出し方がある。
+<span class='line'>417</span> 	 * @constructor
+<span class='line'>418</span> 	 * @name MiMicJS.MiMicException
+<span class='line'>419</span> 	 * @param ...
+<span class='line'>420</span> 	 * 詳細は、MiMicException:nを参照。
+<span class='line'>421</span> 	 */</span><span class="WHIT">
+<span class='line'>422</span> </span><span class="WHIT">	</span><span class="NAME">NS.MiMicException</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">MiMicException</span><span class="PUNC">(</span><span class="COMM">/*...*/</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>423</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>424</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">pfx</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">arguments.callee.caller</span><span class="PUNC">==</span><span class="STRN">"function"</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>426</span> </span><span class="WHIT">			 </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.callee.caller.name.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">length</span><span class="PUNC">></span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>427</span> </span><span class="WHIT">				</span><span class="NAME">pfx</span><span class="PUNC">=</span><span class="STRN">"function '"</span><span class="PUNC">+</span><span class="NAME">arguments.callee.caller.name</span><span class="PUNC">+</span><span class="STRN">'.'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">			 </span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>429</span> </span><span class="WHIT">			 	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">=</span><span class="NAME">arguments.callee.caller.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>430</span> </span><span class="WHIT">				</span><span class="NAME">pfx</span><span class="PUNC">=</span><span class="STRN">"closure '"</span><span class="PUNC">+</span><span class="NAME">s.substring</span><span class="PUNC">(</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NAME">s.indexOf</span><span class="PUNC">(</span><span class="STRN">"{"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">"...'"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>431</span> </span><span class="WHIT">			 </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>432</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>433</span> </span><span class="WHIT">			</span><span class="NAME">pfx</span><span class="PUNC">=</span><span class="STRN">"root document"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>434</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>435</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">sfx</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>436</span> </span><span class="WHIT">		</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="WHIT">		</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="WHIT">			</span><span class="COMM">//とりあえずexceptiion</span><span class="WHIT">
+<span class='line'>439</span> </span><span class="WHIT">			</span><span class="NAME">this.code</span><span class="PUNC">=</span><span class="NAME">NS.Error.NG</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>440</span> </span><span class="WHIT">			</span><span class="NAME">this.message</span><span class="PUNC">=</span><span class="NAME">pfx</span><span class="PUNC">+</span><span class="STRN">" code(0x"</span><span class="PUNC">+</span><span class="NAME">this.code.toString</span><span class="PUNC">(</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">")"</span><span class="PUNC">+</span><span class="NAME">NS.Error.NG</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>441</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>442</span> </span><span class="WHIT">		</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">=</span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>444</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">v</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>445</span> </span><span class="WHIT">				</span><span class="COMM">//exception継承</span><span class="WHIT">
+<span class='line'>446</span> </span><span class="WHIT">				</span><span class="NAME">this.code</span><span class="PUNC">=</span><span class="NAME">v.code</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>447</span> </span><span class="WHIT">				</span><span class="NAME">sfx</span><span class="PUNC">=</span><span class="STRN">"  \nfrom "</span><span class="PUNC">+</span><span class="NAME">v.message</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>448</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">==</span><span class="STRN">"object"</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">v.length</span><span class="PUNC">==</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>449</span> </span><span class="WHIT">				</span><span class="COMM">//Errorコードテーブル</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="WHIT">				</span><span class="NAME">this.code</span><span class="PUNC">=</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>451</span> </span><span class="WHIT">				</span><span class="NAME">sfx</span><span class="PUNC">=</span><span class="NAME">v</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>452</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>453</span> </span><span class="WHIT">				</span><span class="COMM">//文字列やオブジェクト</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="WHIT">				</span><span class="NAME">this.code</span><span class="PUNC">=</span><span class="NAME">NS.Error.NG</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">				</span><span class="NAME">sfx</span><span class="PUNC">=</span><span class="NAME">NS.Error.NG</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">" "</span><span class="PUNC">+</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">!=</span><span class="STRN">'undefined'</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">v.toString</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">:</span><span class="STRN">"v==undefined"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">			</span><span class="NAME">this.message</span><span class="PUNC">=</span><span class="NAME">pfx</span><span class="PUNC">+</span><span class="STRN">" code(0x"</span><span class="PUNC">+</span><span class="NAME">this.code.toString</span><span class="PUNC">(</span><span class="NUMB">16</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">")"</span><span class="PUNC">+</span><span class="NAME">sfx</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="WHIT">		</span><span class="KEYW">default</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>460</span> </span><span class="WHIT">			</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>462</span> </span><span class="WHIT">		</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.MiMicException</span><span class="PUNC">(</span><span class="STRN">"Invalid MiMicException argument."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>463</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>464</span> 
+<span class='line'>465</span> </span><span class="WHIT">	</span><span class="NAME">NS.MiMicException.prototype</span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'>466</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>467</span> </span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>469</span> 		 * MiMicErrorCode形式のエラーコードを保持する。
+<span class='line'>470</span> 		 * @field {object as MiMicErrorCode}
+<span class='line'>471</span> 		 * @name MiMicJS.MiMicException#code
+<span class='line'>472</span> 		 */</span><span class="WHIT">
+<span class='line'>473</span> </span><span class="WHIT">		</span><span class="NAME">code</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>474</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>475</span> 		 * エラーメッセージを保持する。この値は、改行区切りのコールスタックである。
+<span class='line'>476</span> 		 * @field {string}
+<span class='line'>477</span> 		 * @name MiMicJS.MiMicException#message
+<span class='line'>478</span> 		 */</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="WHIT">		</span><span class="NAME">message</span><span class="PUNC">:</span><span class="STRN">""</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>481</span> 		 * messageフィールドをalertで表示する。
+<span class='line'>482</span> 		 * @name MiMicJS.MiMicException#alert
+<span class='line'>483</span> 		 * @function
+<span class='line'>484</span> 		 * @example
+<span class='line'>485</span> 		 * try{
+<span class='line'>486</span> 		 * 	throw new MiMicException();
+<span class='line'>487</span> 		 * }catch(e){
+<span class='line'>488</span> 		 * 	e.alert();
+<span class='line'>489</span> 		 * }	 
+<span class='line'>490</span> 		 */</span><span class="WHIT">
+<span class='line'>491</span> </span><span class="WHIT">		</span><span class="NAME">alert</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>492</span> </span><span class="WHIT">			</span><span class="NAME">alert</span><span class="PUNC">(</span><span class="NAME">this.message</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>493</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>494</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>495</span> 		 * toStringを上書きする。オブジェクトを文字列化する。
+<span class='line'>496</span> 		 * 文字列は例外のコールスタックであり、デバックで役立つ。
+<span class='line'>497</span> 		 * @function
+<span class='line'>498</span> 		 * @name MiMicJS.MiMicException#toString
+<span class='line'>499</span> 		 * @return {string}
+<span class='line'>500</span> 		 * 現在のオブジェクトの状態（例外のコールスタック）
+<span class='line'>501</span> 		 * @example
+<span class='line'>502</span> 		 * try{
+<span class='line'>503</span> 		 * 	throw new MiMicException();
+<span class='line'>504</span> 		 * }catch(e){
+<span class='line'>505</span> 		 * 	alert(e.toString());
+<span class='line'>506</span> 		 * }	 
+<span class='line'>507</span> 		 */</span><span class="WHIT">
+<span class='line'>508</span> </span><span class="WHIT">		</span><span class="NAME">toString</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>509</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>510</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="STRN">"MiMicException:"</span><span class="PUNC">+</span><span class="NAME">this.message</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>511</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>512</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>513</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>514</span> 
+<span class='line'>515</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>516</span> </span><span class="WHIT">	</span><span class="COMM">/**@private */</span><span class="WHIT">
+<span class='line'>517</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">NS</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>518</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>519</span> 	 * MiMicRPCのクライアントクラスです。
+<span class='line'>520</span> 	 * 通信APIを提供します。
+<span class='line'>521</span> 	 * @name MiMicJS.Rpc
+<span class='line'>522</span> 	 * @constructor
+<span class='line'>523</span> 	 * @param {HashMap} i_event
+<span class='line'>524</span> 	 * 非同期イベントハンドラの連想配列です。登録できるメンバは以下の通りです。
+<span class='line'>525</span> 	 * &lt;ul>
+<span class='line'>526</span> 	 * &lt;li>onOpen:function() -
+<span class='line'>527</span> 	 * open関数のコールバック関数です。
+<span class='line'>528</span> 	 * &lt;li>onClose:function() -
+<span class='line'>529</span> 	 * close関数のコールバック関数です。
+<span class='line'>530</span> 	 * &lt;li>onError:function() -
+<span class='line'>531</span> 	 * 何らかの異常で通信を継続できないエラーが発生し、コネクションを維持できない時に発生します。
+<span class='line'>532</span> 	 * このイベントが発生するとコネクションは閉じられます。
+<span class='line'>533</span> 	 * &lt;/ul>
+<span class='line'>534</span> 	 */</span><span class="WHIT">
+<span class='line'>535</span> </span><span class="WHIT">	</span><span class="NAME">NS.Rpc</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Rpc</span><span class="PUNC">(</span><span class="NAME">i_event</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>536</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>537</span> </span><span class="WHIT">		</span><span class="NAME">this._event</span><span class="PUNC">=</span><span class="PUNC">(</span><span class="NAME">i_event</span><span class="PUNC">)</span><span class="PUNC">?</span><span class="NAME">i_event</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>538</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>539</span> </span><span class="WHIT">	</span><span class="NAME">NS.Rpc.prototype</span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'>540</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>541</span> </span><span class="WHIT">		</span><span class="NAME">_event</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>542</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>543</span> 		 * @private 
+<span class='line'>544</span> 		 * Websocketインスタンスです。
+<span class='line'>545</span> 		 */</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">		</span><span class="NAME">_ws</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>548</span> 		 * @private
+<span class='line'>549</span> 		 * [READ ONLY]
+<span class='line'>550</span> 		 * RPCの平均RTT[ms]です。
+<span class='line'>551</span> 		 * @name MiMicJs.Rpc#RTT
+<span class='line'>552</span> 		 */</span><span class="WHIT">
+<span class='line'>553</span> </span><span class="WHIT">		</span><span class="NAME">rtt</span><span class="PUNC">:</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>554</span> </span><span class="WHIT">		</span><span class="COMM">/** メソッドIDカウンタ。sendJsonを実行する毎にインクリメントされます。*/</span><span class="WHIT">
+<span class='line'>555</span> </span><span class="WHIT">		</span><span class="NAME">_method_id</span><span class="PUNC">:</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>556</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>557</span> 		 * RPCコネクションを開きます。
+<span class='line'>558</span> 		 * 関数が終了するとonOpenイベントをコールバックします。
+<span class='line'>559</span> 		 * @name MiMicJS.Rpc#open
+<span class='line'>560</span> 		 * @function
+<span class='line'>561</span> 		 * @param i_url
+<span class='line'>562</span> 		 * ws://から始まるWebsocketサービスURLを指定します。
+<span class='line'>563</span> 		 */</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="WHIT">		</span><span class="NAME">open</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">open</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">q</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ev</span><span class="PUNC">=</span><span class="NAME">this._event</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ws</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">WebSocket</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">			</span><span class="NAME">ws.onopen</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>575</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onOpen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onOpen</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>576</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>577</span> </span><span class="WHIT">			</span><span class="NAME">ws.onclose</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>578</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onClose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>579</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>580</span> </span><span class="WHIT">			</span><span class="NAME">ws.error</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>581</span> </span><span class="WHIT">				</span><span class="NAME">_t.shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>582</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onError</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>583</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>584</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>585</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>586</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>587</span> </span><span class="WHIT">			</span><span class="NAME">ws.onmessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>588</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>589</span> </span><span class="WHIT">				</span><span class="COMM">//ストリームからJSONを抽出。"のエスケープには対応しない。</span><span class="WHIT">
+<span class='line'>590</span> </span><span class="WHIT">				</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">e.data.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>591</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">=</span><span class="NAME">e.data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>592</span> </span><span class="WHIT">					</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">rxst</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>593</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>594</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">!=</span><span class="STRN">'"'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>595</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>596</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>597</span> </span><span class="WHIT">						</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>598</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>599</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">!=</span><span class="STRN">'{'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>600</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>601</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>602</span> </span><span class="WHIT">						</span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">'({'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>603</span> </span><span class="WHIT">						</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>604</span> </span><span class="WHIT">						</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>605</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>606</span> </span><span class="WHIT">						</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>607</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'"'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>608</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">2</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>609</span> </span><span class="WHIT">							</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>610</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'}'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>611</span> </span><span class="WHIT">							</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="STRN">'})'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>612</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>613</span> </span><span class="WHIT">							</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>614</span> </span><span class="COMM">//								log(rx);//Debug</span><span class="WHIT">
+<span class='line'>615</span> </span><span class="WHIT">								</span><span class="COMM">//JSONがたぶん確定</span><span class="WHIT">
+<span class='line'>616</span> </span><span class="WHIT">								</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">=</span><span class="NAME">eval</span><span class="PUNC">(</span><span class="NAME">rx</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>617</span> </span><span class="WHIT">								</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i2</span><span class="PUNC">=</span><span class="NAME">q.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">>=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">--</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>618</span> </span><span class="WHIT">									</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">==</span><span class="NAME">j.id</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>619</span> </span><span class="WHIT">										</span><span class="COMM">//id一致→コールバック</span><span class="WHIT">
+<span class='line'>620</span> </span><span class="WHIT">										</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">qi</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>621</span> </span><span class="WHIT">										</span><span class="NAME">q.splice</span><span class="PUNC">(</span><span class="NAME">i2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>622</span> </span><span class="WHIT">										</span><span class="COMM">//コールバック必要？</span><span class="WHIT">
+<span class='line'>623</span> </span><span class="WHIT">										</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">(</span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>624</span> </span><span class="WHIT">										</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>625</span> </span><span class="WHIT">									</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>626</span> </span><span class="WHIT">								</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>627</span> </span><span class="WHIT">							</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>628</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>629</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>630</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>631</span> </span><span class="WHIT">					</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>632</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>633</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>634</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>635</span> </span><span class="WHIT">			</span><span class="NAME">this._q</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>636</span> </span><span class="WHIT">			</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="NAME">ws</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>637</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>638</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>639</span> 		 * 接続中のRPCコネクションを閉じます。
+<span class='line'>640</span> 		 * 関数が終了するとonCloseイベントをコールバックします。
+<span class='line'>641</span> 		 * @name MiMicJS.Rpc#close
+<span class='line'>642</span> 		 * @function
+<span class='line'>643</span> 		 */</span><span class="WHIT">
+<span class='line'>644</span> </span><span class="WHIT">		</span><span class="NAME">close</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>645</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>646</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this._ws.readyState</span><span class="PUNC">==</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>647</span> </span><span class="WHIT">				</span><span class="NAME">this._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>648</span> </span><span class="WHIT">				</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>649</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>650</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>651</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>652</span> 		 * RPC回線を確実に閉じます。
+<span class='line'>653</span> 		 * この関数を実行すると、すべてのコールバックイベントはキャンセルされます。
+<span class='line'>654</span> 		 * @name MiMicJS.Rpc#shutdown
+<span class='line'>655</span> 		 * @function
+<span class='line'>656</span> 		 */</span><span class="WHIT">
+<span class='line'>657</span> </span><span class="WHIT">		</span><span class="NAME">shutdown</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>658</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>659</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>660</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>661</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onopen</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>662</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onmessage</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>663</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onclose</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>664</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onerror</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>665</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>666</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>667</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>668</span> 		 * 非同期でJSON RPCメソッドを送信します。
+<span class='line'>669</span> 		 * @name MiMicJS.Rpc#sendMethod
+<span class='line'>670</span> 		 * @function
+<span class='line'>671</span> 		 * @param {string} i_method
+<span class='line'>672</span> 		 * RPCメソッドの名前です。
+<span class='line'>673</span> 		 * @param {string} i_params
+<span class='line'>674</span> 		 * カンマ区切りのJSONスタイルの文字列です。この文字列は[....]に埋め込まれます。エスケープ文字列は使用できません。
+<span class='line'>675</span> 		 * @param {function(json)}i_callback
+<span class='line'>676</span> 		 * Resultを受け取るコールバック関数です。jsonにはResult JSONをパースしたオブジェクトが入ります。
+<span class='line'>677</span> 		 * @return {int}
+<span class='line'>678</span> 		 * メソッドIDを返します。
+<span class='line'>679</span> 		 */</span><span class="WHIT">
+<span class='line'>680</span> </span><span class="WHIT">		</span><span class="NAME">sendMethod</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">callJsonRpc</span><span class="PUNC">(</span><span class="NAME">i_method</span><span class="PUNC">,</span><span class="NAME">i_params</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>681</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>682</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">=</span><span class="STRN">"{\"jsonrpc\":\"2.0\",\"method\":\""</span><span class="PUNC">+</span><span class="NAME">i_method</span><span class="PUNC">+</span><span class="STRN">"\",\"params\":["</span><span class="PUNC">+</span><span class="NAME">i_params</span><span class="PUNC">+</span><span class="STRN">"],\"id\":"</span><span class="PUNC">+</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="STRN">"}"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>683</span> </span><span class="COMM">//			log(v);//Debug</span><span class="WHIT">
+<span class='line'>684</span> </span><span class="WHIT">			</span><span class="NAME">this._ws.send</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>685</span> </span><span class="WHIT">			</span><span class="NAME">this._q.push</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="NAME">this._method_id</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="COMM">//キューに記録</span><span class="WHIT">
+<span class='line'>686</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="PUNC">(</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0x0fffffff</span><span class="PUNC">;</span><span class="COMM">//IDインクリメント</span><span class="WHIT">
+<span class='line'>687</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._method_id</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>688</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>689</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>690</span> 
+<span class='line'>691</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
