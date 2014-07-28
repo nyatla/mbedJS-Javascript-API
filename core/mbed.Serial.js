@@ -15,61 +15,61 @@ var MI=MiMicJS;
  * @param {[PinName,PinName]} i_params
  * UARTを構成する２本のピンを指定します。tx,rxの順で設定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onFormat -
+ * <li>onFormat:function() -
  * format関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(v)} onReadable -
+ * <li>onReadable:function(v) -
  * read関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{boolean} v - 読出しが可能化の真偽値です。</li>
+ * 		<li>v:boolean - 読出しが可能化の真偽値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onWriteable -
+ * <li>onWriteable:function(v) -
  * write関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{boolean} v - 書き込みが可能化の真偽値です。</li>
+ * 		<li>v:boolean - 書き込みが可能化の真偽値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onSend_break -
+ * <li>onSend_break:function() -
  * send_break関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(v)} onPutc -
+ * <li>onPutc:function(v) -
  * putc関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 謎の戻り値です。</li>
+ * 		<li>v:int - 謎の戻り値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onPuts -
+ * <li>onPuts:function(v) -
  * puts関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 謎の戻り値です。</li>
+ * 		<li>v:int - 謎の戻り値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onGetc -
+ * <li>onGetc:function(v) -
  * getc関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 読みだした1バイトの値です。</li>
+ * 		<li>v:int - 読みだした1バイトの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onGets -
+ * <li>onGets:function(v) -
  * gets関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 読みだした文字列です。</li>
+ * 		<li>v:int - 読みだした文字列です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onBaud -
+ * <li>onBaud:function() -
  * baud関数が完了したときに呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。

@@ -15,43 +15,44 @@ var MI=MiMicJS;
  * @param {[PinName,PinName]} i_params
  * i2Cバスを構成するピンIDを指定します。sda,sclの順番です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onFrequency -
+ * <li>onFrequency:function() -
  * frequency関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(ret,data)} onRead -
+ * <li>onRead:function(ret,data) -
  * read関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-は成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
  * read.1の場合、 0:ACK(成功),1:NACK(失敗)です。read.2の場合、読みだした値です。</li>
- * <li>data {byte[]}-読みだしたデータの配列です。read.1の場合のみ有効です。</li>
+ * <li>data:byte[] - 読みだしたデータの配列です。read.1の場合のみ有効です。</li>
  * </ul> 
  * </li>
- * <li>{function(ret)} onWrite -
+ * <li>onWrite:function(ret)-
  * write関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
  * write.1の場合、ACK:0(成功),NACK:それ以外です。write.2の場合、ACKを受信すると1を返します。</li>
  * </ul> 
  * </li>
- * <li>{function()} onStart -
+ * <li>onStart:function() -
  * start関数が完了したときに呼び出されます。
  * </li>
- * <li>{function()} onStop -
+ * <li>onStop:function() -
  * stop関数が完了したときに呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.I2C}
  * @example //Callback
@@ -219,8 +220,8 @@ CLASS.prototype=
 	 * {ret:int,data:[byte]}
 	 * Generatorの場合は戻り値オブジェクトを返します。
 	 * <ul>
-	 * <li>ret {int}- 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
-	 * <li>data {byte[]}- 読みだしたデータ</li>
+	 * <li>ret:int - 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
+	 * <li>data:byte[] - 読みだしたデータ</li>
 	 * </ul>
 	 */
 	/**

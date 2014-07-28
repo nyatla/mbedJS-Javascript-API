@@ -13,34 +13,34 @@ var MI=MiMicJS;
  * @param {mbedJS.Mcu} i_mcu
  * インスタンスをバインドするMCUオブジェクトです。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead -
+ * <li>onRead:function(v) -
  * read関数が完了した時に呼び出されます。
  * 	<ul>
  * 		<li>{byte[]} v - 読みだしたバイト値を格納した配列です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onRead32 -
+ * <li>onRead32:function(v) -
  * read32関数が完了した時に呼び出されます。
  * 	<ul>
- * 		<li>{int[]} v - 読みだしたuint32値を格納した配列です。</li>
+ * 		<li>v:int[] - 読みだしたuint32値を格納した配列です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数が完了した時に呼び出されます。
  * </li>
- * <li>{function()} onWrite32 -
+ * <li>onWrite32:function() -
  * write32関数が完了した時に呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。

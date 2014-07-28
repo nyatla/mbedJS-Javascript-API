@@ -13,9 +13,9 @@ var MI=MiMicJS;
  * @param {string} i_url
  * 接続先のMiMicRPCサービスのアドレスを指定します。
  * @param {HashMap|Generator} i_handler
- * 非同期イベントハンドラの連想配列、又はGeneratorです。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
  * <li>{function()} onNew -
  * インスタンスが使用可能になった時に呼び出されます。
@@ -38,7 +38,7 @@ var MI=MiMicJS;
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の戻り値はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の戻り値はyiledの戻り値として取得できます。
  * <p>
  * @return {mbedJS.Mcu}
  * @example //Callback
