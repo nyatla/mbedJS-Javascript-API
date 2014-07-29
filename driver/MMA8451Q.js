@@ -83,19 +83,19 @@ var CLASS=function MMA8451Q(i_parent,i_params,i_handler)
 		MI.assertInt(i_params);		
 		//パラメータ退避
 		_t._i2c_addr=i_params[0];
-
 		//i2cが準備できたら実行する関数
 		function _onNew()
 		{
 			//control command
-			_t._i2c.write(_t._i2c_addr,[0x2a,0x01],1,false,
+			_t._i2c.write(_t._i2c_addr,[0x2a,0x01],false,
 			function(){
 				if(cb){cb();}
 				else if(_t._gen){_t._gen.next(_t);}
 			});
 		}
 		//MCUかI2Cか調べる
-		if(i_parent.RPC_NS!=NS.I2C.RPC_NS){
+		if(i_parent.RPC_NS!=NS.I2C.prototype.RPC_NS){
+			_t._i2c_attached=true;
 			_t._i2c=new NS.I2C(i_parent,[i_params[1],i_params[2]],function(){
 				_t._i2c.frequency(100000,function(){
 					_onNew();
@@ -122,6 +122,7 @@ CLASS.prototype=
 	_event:{},
 	_i2c:null,
 	_i2c_addr:0,
+	_i2c_attached:false,
 	/**
 	 * Generatorモードのときに使用する関数です。
 	 * Generatorモードの時は、yieldと併用してnew MMA8451Q()の完了を待ちます。
@@ -153,10 +154,12 @@ CLASS.prototype=
 			var cb=MI._getCb(arguments,_t._event.onGetWhoAmI);
 			MI._assertYield.call(_t);
 			_t._lc=CLASS.getWhoAmI;			
-			_t._i2c.write(_t._i2c_addr,[0x0d],1,function(v){
-				if(cb){cb(v);}
-				else if(_t._gen){_t._gen.next(v);}
-				 _t._lc=null;
+			_t._i2c.write(_t._i2c_addr,[0x0d],true,function(){
+				_t._i2c.read(_t._i2c_addr,1,false,function(v){
+					if(cb){cb(v.data[0]);}
+					else if(_t._gen){_t._gen.next(v.data[0]);}
+					 _t._lc=null;
+				});
 			});
 		}catch(e){
 			throw new MI.MiMicException(e);
@@ -171,9 +174,9 @@ CLASS.prototype=
 			var _t=this;
 			MI._assertYield.call(_t);
 			_t._lc=i_lc;
-			_t._i2c.write(_t._i2c_addr,[i_reg],1,true,function(){
+			_t._i2c.write(_t._i2c_addr,[i_reg],true,function(){
 				_t._i2c.read(_t._i2c_addr,2,false,function(v){
-					var ax=toInt14(v);
+					var ax=toInt14(v.data);
 					if(i_cb){i_cb(ax);}
 					else if(_t._gen){_t._gen.next(ax);}
 					 _t._lc=null;
@@ -258,9 +261,20 @@ CLASS.prototype=
 	 */
 	dispose:function MMA8451Q_dispose()
 	{
-		var _t=this;
-		//自己生成したI2Cの場合のみ削除
-		alert("NotImplement!");	
+		try{
+			var _t=this;
+			var cb=MI._getCb(arguments,_t._event.onDispose);
+			MI._assertYield.call(_t);
+			//自己生成したI2Cの場合のみ削除
+			if(_t._i2c_attached){
+				_t._i2c.dispose(function(v){
+					if(cb){cb(v);}
+					else if(_t._gen){_t._gen.next(v);}
+				});
+			}
+		}catch(e){
+			throw new MI.MiMicException(e);
+		}
 	}
 }
 NS.MMA8451Q=CLASS;

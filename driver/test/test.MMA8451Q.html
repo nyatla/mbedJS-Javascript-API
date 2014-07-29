@@ -16,6 +16,8 @@ function log(v)
 	}
 }
 var I2C_ADDR=0x3A;
+var I2C_SDA=mbedJS.PinName.p28;
+var I2C_SCL=mbedJS.PinName.p27;
 /**ASYNCAPIのテスト*/
 function callback_test()
 {
@@ -24,7 +26,7 @@ function callback_test()
 	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
 	{
 		onNew:function(){
-			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],{
+			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],{
 			onNew:function(){
 				log("[PASS]onNew");
 				dev.getWhoAmI();
@@ -66,7 +68,9 @@ function callback_hell_test()
 	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
 	{
 		onNew:function(){
-			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],function(){
+//			var i2c=new mbedJS.I2C(mcu,[mbedJS.PinName.p28,mbedJS.PinName.p27],function(){
+//			var dev=new mbedJS.MMA8451Q(i2c,[I2C_ADDR],function(){
+			var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],function(){
 				log("[PASS]onNew");
 				dev.getWhoAmI(function(v1){
 					log("[PASS]onGetWhoAmI:"+v1);
@@ -78,12 +82,13 @@ function callback_hell_test()
 								log("[PASS]onGetAccZ:"+v4);
 								dev.getAccAllAxis(function(v5){
 									log("[PASS]onGetAccAllAxis:"+v5.x+","+v5.y+","+v5.z);
-									mcu.close();
+									dev.dispose(function(v){log("dispose:"+v);mcu.close();})
 								});
 							});
 						});
 					});
 				});
+//			});
 			});
 		},
 		onClose:function(){
@@ -102,9 +107,9 @@ function generator_test()
 	log();
 	var g=function*(){
 	try{
-		var mcu=new mbedJS.Mcu("192.168.128.39",g);
+		var mcu=new mbedJS.Mcu(document.getElementById("addr").value,g);
 		yield mcu.waitForNew();
-		var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,mbedJS.PinName.p28,mbedJS.PinName.p27],g);
+		var dev=new mbedJS.MMA8451Q(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],g);
 		yield dev.waitForNew();
 		log("[PASS]onNew");
 		var v;
