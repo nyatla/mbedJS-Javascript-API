@@ -800,31 +800,32 @@ var MI=MiMicJS;
  * @param {PinName} i_params
  * ピンIDを指定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onRead_u16 -
+ * <li>onRead_u16:function(v) -
  * read_u16関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.AnalogIn}
  * @example //Callback
@@ -1000,31 +1001,32 @@ var MI=MiMicJS;
  * @param {PinName} i_params
  * ピンIDを指定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
- * <li>{function()} onWrite_u16 -
+ * <li>onWrite_u16:function() -
  * write関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.AnalogOut}
  * @example //Callback
@@ -1239,28 +1241,29 @@ var MI=MiMicJS;
  * @param {[PinName...]} i_params
  * ピンIDの配列を指定します。要素数の最大値は16です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
  * <li>{function()} onNew -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onMode -
+ * <li>onMode:function() -
  * mode関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.BusIn}
  * @example //Callback
@@ -1452,38 +1455,39 @@ var MI=MiMicJS;
  * @param {[PinName...]} i_params
  * ピンIDの配列を指定します。要素数の最大値は16です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
  * </ul>
- * <li>{function()} onOutput -
+ * <li>onOutput:function() -
  * output関数のコールバック関数です。
  * </li>
- * <li>{function()} onInput -
+ * <li>onInput:function() -
  * input関数のコールバック関数です。
  * </li>
- * <li>{function()} onMode -
+ * <li>onMode:function() -
  * mode関数のコールバック関数です。
  * </li>
  * 
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.BusIn}
  * @example //Callback
@@ -1776,28 +1780,29 @@ var MI=MiMicJS;
  * @param {[PinName...]} i_params
  * ピンIDの配列を指定します。要素数の最大値は16です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v)  -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.BusOut}
  * @example //Callback
@@ -1990,28 +1995,29 @@ var MI=MiMicJS;
  * @param {PinName} i_params
  * ピンIDを指定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onMode -
+ * <li>onMode:function() -
  * mode関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.DigitalIn}
  * @example //Callback
@@ -2201,32 +2207,32 @@ var MI=MiMicJS;
  * </ul>
  * </p>
  * <p>配列の場合は次の順番でパラメータを指定します。
- * <pre>{pin,value}</pre>
+ * <pre>[{PinName} pin,{int} value]</pre>
  * </p>
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
- * 
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.DigitalOut}
  * @example //Callback
@@ -2414,9 +2420,9 @@ var MI=MiMicJS;
  * @param {string} i_url
  * 接続先のMiMicRPCサービスのアドレスを指定します。
  * @param {HashMap|Generator} i_handler
- * 非同期イベントハンドラの連想配列、又はGeneratorです。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
  * <li>{function()} onNew -
  * インスタンスが使用可能になった時に呼び出されます。
@@ -2439,7 +2445,7 @@ var MI=MiMicJS;
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の戻り値はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の戻り値はyiledの戻り値として取得できます。
  * <p>
  * @return {mbedJS.Mcu}
  * @example //Callback
@@ -2703,22 +2709,22 @@ var MI=MiMicJS;
  * <pre>{port,mask}</pre>
  * </p>
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のポートの値です。</li>
+ * 		<li>v:int - 現在のポートの値です。</li>
  * 	</ul>
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -2886,25 +2892,25 @@ var MI=MiMicJS;
  * <pre>{port,mask}</pre>
  * </p>
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v)  -
  * read関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 現在のピンの値です。</li>
+ * 		<li>v:int - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -3091,43 +3097,43 @@ var MI=MiMicJS;
  * @param {PinName} i_params
  * ピンIDを指定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v)  -
  * read関数のコールバック関数です。
  * 	<ul>
  * 		<li>{int} v - 現在のピンの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onPeriod -
+ * <li>onPeriod:function() -
  * period関数のコールバック関数です。
  * </li>
- * <li>{function()} onPeriod_ms -
+ * <li>onPeriod_ms:function() -
  * period_ms関数のコールバック関数です。
  * </li>
- * <li>{function()} onPeriod_us -
+ * <li>onPeriod_us:function() -
  * period_ns関数のコールバック関数です。
  * </li>
- * <li>{function()} onPulsewidth -
+ * <li>onPulsewidth:function() -
  * pulswidth関数のコールバック関数です。
  * </li>
- * <li>{function()} onPulsewidth_ms -
+ * <li>onPulsewidth_ms:function() -
  * pulswidth_ms関数のコールバック関数です。
  * </li>
- * <li>{function()} onPulsewidth_us -
+ * <li>onPulsewidth_us:function() -
  * pulswidth_us関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -3510,28 +3516,28 @@ var MI=MiMicJS;
  * @param {[PinName,PinName,PinName]} i_params
  * SPIを構成する3つのPinNameを格納する配列です。mosi,miso,sclkの順番です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onWrite -
+ * <li>onWrite:function(v) -
  * write関数のコールバック関数です。
  * 	<ul>
- * 		<li>{int} v - 受信した8BIT値です。</li>
+ * 		<li>v:int - 受信した8BIT値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onFrequency  -
+ * <li>onFrequency:function(v) -
  * frequency関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onFormat  -
+ * <li>onFormat:function(v) -
  * format関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -3749,34 +3755,34 @@ var MI=MiMicJS;
  * SPIを構成する4つのPinNameを格納する配列です。
  * mosi, miso, sclkの順番で設定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onFrequency  -
+ * <li>onFrequency:function(v) -
  * frequency関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onFormat  -
+ * <li>onFormat:function(v) -
  * format関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onReceive  -
+ * <li>onReceive:function(v) -
  * receive関数のコールバック関数です。
  * </li>
- * <li>{function(v)} onRead  -
+ * <li>onRead:function(v) -
  * read関数のコールバック関数です。
  * <ul>
- * 		<li>{int} v - 受信した8BIT値です。</li>
+ * 		<li>v:int - 受信した8BIT値です。</li>
  * </ul>
  * </li>
- * <li>{function()} onReply  -
+ * <li>onReply:function() -
  * reply関数のコールバック関数です。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -4059,34 +4065,34 @@ var MI=MiMicJS;
  * @param {mbedJS.Mcu} i_mcu
  * インスタンスをバインドするMCUオブジェクトです。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function(v)} onRead -
+ * <li>onRead:function(v) -
  * read関数が完了した時に呼び出されます。
  * 	<ul>
  * 		<li>{byte[]} v - 読みだしたバイト値を格納した配列です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onRead32 -
+ * <li>onRead32:function(v) -
  * read32関数が完了した時に呼び出されます。
  * 	<ul>
- * 		<li>{int[]} v - 読みだしたuint32値を格納した配列です。</li>
+ * 		<li>v:int[] - 読みだしたuint32値を格納した配列です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onWrite -
+ * <li>onWrite:function() -
  * write関数が完了した時に呼び出されます。
  * </li>
- * <li>{function()} onWrite32 -
+ * <li>onWrite32:function() -
  * write32関数が完了した時に呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -4423,43 +4429,44 @@ var MI=MiMicJS;
  * @param {[PinName,PinName]} i_params
  * i2Cバスを構成するピンIDを指定します。sda,sclの順番です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onFrequency -
+ * <li>onFrequency:function() -
  * frequency関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(ret,data)} onRead -
+ * <li>onRead:function(ret,data) -
  * read関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-は成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
  * read.1の場合、 0:ACK(成功),1:NACK(失敗)です。read.2の場合、読みだした値です。</li>
- * <li>data {byte[]}-読みだしたデータの配列です。read.1の場合のみ有効です。</li>
+ * <li>data:byte[] - 読みだしたデータの配列です。read.1の場合のみ有効です。</li>
  * </ul> 
  * </li>
- * <li>{function(ret)} onWrite -
+ * <li>onWrite:function(ret)-
  * write関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
  * write.1の場合、ACK:0(成功),NACK:それ以外です。write.2の場合、ACKを受信すると1を返します。</li>
  * </ul> 
  * </li>
- * <li>{function()} onStart -
+ * <li>onStart:function() -
  * start関数が完了したときに呼び出されます。
  * </li>
- * <li>{function()} onStop -
+ * <li>onStop:function() -
  * stop関数が完了したときに呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
+ * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+ * メンバ関数のイベントハンドラは個別に設定してください。
  * </p>
  * @return {mbedJS.I2C}
  * @example //Callback
@@ -4627,8 +4634,8 @@ CLASS.prototype=
 	 * {ret:int,data:[byte]}
 	 * Generatorの場合は戻り値オブジェクトを返します。
 	 * <ul>
-	 * <li>ret {int}- 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
-	 * <li>data {byte[]}- 読みだしたデータ</li>
+	 * <li>ret:int - 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
+	 * <li>data:byte[] - 読みだしたデータ</li>
 	 * </ul>
 	 */
 	/**
@@ -4823,45 +4830,45 @@ var MI=MiMicJS;
  * @param {[PinName,PinName]} i_params
  * i2Cバスを構成するピンIDを指定します。sda,sclの順番です。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onFrequency -
+ * <li>onFrequency:function() -
  * frequency関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(ret,data)} onRead -
+ * <li>onRead:function(ret,data) -
  * read関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-は成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。read.1とread.2の場合で意味が異なります。
  * read.1の場合、 0:ACK(成功),1:NACK(失敗)です。read.2の場合、読みだした値です。</li>
- * <li>data {byte[]}-読みだしたデータの配列です。read.1の場合のみ有効です。</li>
+ * <li>data:byte[] - 読みだしたデータの配列です。read.1の場合のみ有効です。</li>
  * </ul> 
  * </li>
- * <li>{function(ret)} onWrite -
+ * <li>onWrite:function(ret) -
  * write関数が完了したときに呼び出されます。
  * <ul>
- * <li>ret {int}-成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
+ * <li>ret:int - 成功/失敗フラグを返します。write.1とwrite.2の場合で意味が異なります。
  * write.1の場合、ACK:0(成功),NACK:それ以外です。write.2の場合、ACKを受信すると1を返します。</li>
  * </ul> 
  * </li>
- * <li>{function(v)} onReceive -
+ * <li>onReceive:function(v) -
  * receive関数が完了したときに呼び出されます。
- * <li>v {int}-受信ステータス値を返します。mbedJS.I2CSlave#RxStatusの値です。</li>
+ * <li>v:int - 受信ステータス値を返します。mbedJS.I2CSlave#RxStatusの値です。</li>
  * </ul> 
  * </li>
- * <li>{function()} onStop -
+ * <li>onStop:function() -
  * stop関数が完了したときに呼び出されます。
  * </li>
- * <li>{function()} onAddress -
+ * <li>onAddress:function() -
  * address関数が完了したときに呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
@@ -5071,8 +5078,8 @@ CLASS.prototype={
 	 * {ret:int,data:[byte]}
 	 * Generatorの場合は戻り値オブジェクトを返します。
 	 * <ul>
-	 * <li>ret {int}- 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
-	 * <li>data {byte[]}- 読みだしたデータ</li>
+	 * <li>ret:int - 成功フラグ 0:ACK(成功),1:NACK(失敗)</li>
+	 * <li>data:byte[] - 読みだしたデータ</li>
 	 * </ul>
 	 */
 	/**
@@ -5259,61 +5266,61 @@ var MI=MiMicJS;
  * @param {[PinName,PinName]} i_params
  * UARTを構成する２本のピンを指定します。tx,rxの順で設定します。
  * @param {HashMap|Generator|function} i_handler
- * 非同期イベントハンドラの連想配列、Generator、コールバック関数の何れかを指定します。
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * 非同期イベントハンドラの場合、関数はイベントハンドラで結果を通知します。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。
  * <ul>
- * <li>{function()} onNew -
+ * <li>onNew:function() -
  * インスタンスが使用可能になった時に呼び出されます。
  * </li>
- * <li>{function()} onFormat -
+ * <li>onFormat:function() -
  * format関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(v)} onReadable -
+ * <li>onReadable:function(v) -
  * read関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{boolean} v - 読出しが可能化の真偽値です。</li>
+ * 		<li>v:boolean - 読出しが可能化の真偽値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onWriteable -
+ * <li>onWriteable:function(v) -
  * write関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{boolean} v - 書き込みが可能化の真偽値です。</li>
+ * 		<li>v:boolean - 書き込みが可能化の真偽値です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onSend_break -
+ * <li>onSend_break:function() -
  * send_break関数が完了したときに呼び出されます。
  * </li>
- * <li>{function(v)} onPutc -
+ * <li>onPutc:function(v) -
  * putc関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 謎の戻り値です。</li>
+ * 		<li>v:int - 謎の戻り値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onPuts -
+ * <li>onPuts:function(v) -
  * puts関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 謎の戻り値です。</li>
+ * 		<li>v:int - 謎の戻り値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onGetc -
+ * <li>onGetc:function(v) -
  * getc関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 読みだした1バイトの値です。</li>
+ * 		<li>v:int - 読みだした1バイトの値です。</li>
  * 	</ul>
  * </li>
- * <li>{function(v)} onGets -
+ * <li>onGets:function(v) -
  * gets関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>{int} v - 読みだした文字列です。</li>
+ * 		<li>v:int - 読みだした文字列です。</li>
  * 	</ul>
  * </li>
- * <li>{function()} onBaud -
+ * <li>onBaud:function() -
  * baud関数が完了したときに呼び出されます。
  * </li>
  * </ul>
  * <p>
- * Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+ * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
  * コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。
