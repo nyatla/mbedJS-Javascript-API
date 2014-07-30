@@ -5,12 +5,12 @@
 var NS=mbedJS;
 var MI=MiMicJS;
 
-function toInt14(i_v){
+function toInt14f(i_v){
     var t = (i_v[0] << 6) | (i_v[1] >> 2);
     if (t > 16383/2){
     	t -= 16383;
     }
-    return t;
+    return t/4096;
 }
 /**
  * MMA8451Qを制御するクラスです。
@@ -176,7 +176,7 @@ CLASS.prototype=
 			_t._lc=i_lc;
 			_t._i2c.write(_t._i2c_addr,[i_reg],true,function(){
 				_t._i2c.read(_t._i2c_addr,2,false,function(v){
-					var ax=toInt14(v.data);
+					var ax=toInt14f(v.data);
 					if(i_cb){i_cb(ax);}
 					else if(_t._gen){_t._gen.next(ax);}
 					 _t._lc=null;
