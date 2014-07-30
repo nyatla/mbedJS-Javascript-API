@@ -6,8 +6,8 @@
 	
 	<property name="JSDKANT" value="D:\application.files\jsdoc-toolkit-ant-task"/>
 	<property name="JSDK" value="D:\application.files\jsdoc_toolkit-2.4.0\jsdoc-toolkit"/>
-	<property name="SRC_ROOT" value="D:\project.sourceforge\MiMic\trunk\misc\mbedJS\mbddJS.API\mbedJS"/>
-	<property name="DEST_ROOT" value="D:\project.sourceforge\MiMic\document\mbedJS.javadoc"/>
+	<property name="SRC_ROOT" value="D:\project.github\mbedJS-Javascript-API\core"/>
+	<property name="DEST_ROOT" value="D:\project.github\mbedJS-Javascript-API\release\jsdoc.core"/>
 	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
 	          classpath="${JSDKANT}\jsdoc-toolkit-ant-task-1.1.2.jar;${JSDK}\java\classes\js.jar" />
 	<jsdoctoolkit jsdochome="${JSDK}\"  outputdir="${DEST_ROOT}" template="mimic">
