@@ -1,5 +1,5 @@
 /**
- * @fileOverview AnalogInクラスを定義します。
+ * @fileOverview MMA8451Qクラスを定義します。
  */
 (function(){
 var NS=mbedJS;
