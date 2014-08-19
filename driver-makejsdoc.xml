@@ -12,6 +12,7 @@
 	          classpath="${JSDKANT}\jsdoc-toolkit-ant-task-1.1.2.jar;${JSDK}\java\classes\js.jar" />
 	<jsdoctoolkit jsdochome="${JSDK}\" outputdir="${DEST_ROOT}" template="mimic">
 		<source file="${SRC_ROOT}\MMA8451Q.js" />
+		<source file="${SRC_ROOT}\LM75B.js" />
 	</jsdoctoolkit>
     </target>
 </project>

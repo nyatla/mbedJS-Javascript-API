@@ -70,14 +70,16 @@ function async()
 			},
 			onGetc:function(v){
 				log("[PASS]onGetc:"+v);
-				uart.puts("1234");
+//				uart.puts("1234");
+				uart.puts([0,1,2,3,255]);
 			},
 			onPuts:function(v){
 				log("[PASS]onPuts:"+v);
-				uart.gets(5);
+//				uart.gets(5);
+				uart.gets(5,'b');
 			},
 			onGets:function(v){
-				log("[PASS]onGets:");
+				log("[PASS]onGets:"+v);
 				mcu.close();
 			}
 			

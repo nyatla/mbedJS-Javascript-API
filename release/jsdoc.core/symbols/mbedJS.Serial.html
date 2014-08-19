@@ -397,7 +397,7 @@ function googleTranslateElementInit() {
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/mbedJS.Serial.html#gets">gets</a></b>(i_len)
+								<div class="fixedFont"><b><a href="../symbols/mbedJS.Serial.html#gets">gets</a></b>(i_len, i_mode)
 								</div>
 								<div class="description">文字列を読み込みます。関数の完了時にonGetsイベントが発生します。Generatorモードの時は、yieldと併用して完了を待機できます。</div>
 							</td>
@@ -415,7 +415,7 @@ function googleTranslateElementInit() {
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/mbedJS.Serial.html#puts">puts</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/mbedJS.Serial.html#puts">puts</a></b>(文字列の時はstring,バイナリの時はバイト配列を指定します。)
 								</div>
 								<div class="description">文字列を出力します。関数の完了時にonPutsイベントが発生します。Generatorモードの時は、yieldと併用して完了を待機できます。</div>
 							</td>
@@ -511,7 +511,7 @@ function googleTranslateElementInit() {
 								<span class="light fixedFont">{HashMap|Generator|function}</span>  <b>i_handler</b>
 								
 							</dt>
-								<dd>非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。<p>{HashMap} 非同期イベントの共通イベントハンドラです。<ul><li>onNew:function() -インスタンスが使用可能になった時に呼び出されます。</li><li>onFormat:function() -format関数が完了したときに呼び出されます。</li><li>onReadable:function(v) -read関数が完了したときに呼び出されます。	<ul>		<li>v:boolean - 読出しが可能化の真偽値です。</li>	</ul></li><li>onWriteable:function(v) -write関数が完了したときに呼び出されます。	<ul>		<li>v:boolean - 書き込みが可能化の真偽値です。</li>	</ul></li><li>onSend_break:function() -send_break関数が完了したときに呼び出されます。</li><li>onPutc:function(v) -putc関数が完了したときに呼び出されます。	<ul>		<li>v:int - 謎の戻り値です。</li>	</ul></li><li>onPuts:function(v) -puts関数が完了したときに呼び出されます。	<ul>		<li>v:int - 謎の戻り値です。</li>	</ul></li><li>onGetc:function(v) -getc関数が完了したときに呼び出されます。	<ul>		<li>v:int - 読みだした1バイトの値です。</li>	</ul></li><li>onGets:function(v) -gets関数が完了したときに呼び出されます。	<ul>		<li>v:int - 読みだした文字列です。</li>	</ul></li><li>onBaud:function() -baud関数が完了したときに呼び出されます。</li></ul><p>{Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。</p><p>コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。</p></dd>
+								<dd>非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。<p>{HashMap} 非同期イベントの共通イベントハンドラです。<ul><li>onNew:function() -インスタンスが使用可能になった時に呼び出されます。</li><li>onFormat:function() -format関数が完了したときに呼び出されます。</li><li>onReadable:function(v) -read関数が完了したときに呼び出されます。	<ul>		<li>v:boolean - 読出しが可能化の真偽値です。</li>	</ul></li><li>onWriteable:function(v) -write関数が完了したときに呼び出されます。	<ul>		<li>v:boolean - 書き込みが可能化の真偽値です。</li>	</ul></li><li>onSend_break:function() -send_break関数が完了したときに呼び出されます。</li><li>onPutc:function(v) -putc関数が完了したときに呼び出されます。	<ul>		<li>v:int - 謎の戻り値です。</li>	</ul></li><li>onPuts:function(v) -puts関数が完了したときに呼び出されます。	<ul>		<li>v:int - 謎の戻り値です。</li>	</ul></li><li>onGetc:function(v) -getc関数が完了したときに呼び出されます。	<ul>		<li>v:int - 読みだした1バイトの値です。</li>	</ul></li><li>onGets:function(v) -gets関数が完了したときに呼び出されます。	<ul>		<li>v:string|byte[] - 読みだした文字列、又はbyte配列です。値はmodeパラメータで変わります。</li>	</ul></li><li>onBaud:function() -baud関数が完了したときに呼び出されます。</li></ul><p>{Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。</p><p>コールバック関数を指定した場合、RPCが完了したときに呼び出されます。メンバ関数のイベントハンドラは個別に設定する必要があります。</p></dd>
 						
 						</dl>
 					
@@ -728,8 +728,8 @@ function googleTranslateElementInit() {
 					<a name="gets"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{int, string}</span>
-					<b>gets</b>(i_len)
+					<span class="light">{int, string|byte[]}</span>
+					<b>gets</b>(i_len, i_mode)
 					
 					</div>
 					<div class="description">
@@ -750,6 +750,12 @@ function googleTranslateElementInit() {
 								</dt>
 								<dd>受信メモリのサイズを指定します。256未満を指定してください。</dd>
 							
+								<dt>
+									<span class="light fixedFont">{int}</span> <b>i_mode</b>
+									
+								</dt>
+								<dd>受信モードを指定します。'b'を指定した場合、バイナリで受信します。省略が可能です。省略時はテキストで受信します。このパラメタは戻り値に影響します。</dd>
+							
 							</dl>
 						
 						
@@ -761,7 +767,7 @@ function googleTranslateElementInit() {
 							
 								<dd><span class="light fixedFont">{int}</span> Callbackモードの時はRPCメソッドのインデクスを返します。</dd>
 							
-								<dd><span class="light fixedFont">{string}</span> Generatorモードの時は受信した文字列を返します。</dd>
+								<dd><span class="light fixedFont">{string|byte[]}</span> Generatorモードの時は受信した文字列、またはbyte配列を返します。</dd>
 							
 							</dl>
 						
@@ -808,7 +814,7 @@ function googleTranslateElementInit() {
 					<div class="fixedFont">
 					
 					<span class="light">{int, int}</span>
-					<b>puts</b>()
+					<b>puts</b>(文字列の時はstring,バイナリの時はバイト配列を指定します。)
 					
 					</div>
 					<div class="description">
@@ -819,6 +825,17 @@ function googleTranslateElementInit() {
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{string|byte[]}</span> <b>文字列の時はstring,バイナリの時はバイト配列を指定します。</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
 						
 						
 						
@@ -975,7 +992,7 @@ function googleTranslateElementInit() {
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Wed Jul 30 2014 10:10:02 GMT+0900 (JST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Tue Aug 19 2014 16:01:51 GMT+0900 (JST)
 		</div>
 	</body>
 </html>

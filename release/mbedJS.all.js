@@ -13,7 +13,7 @@ var MiMicJS={};
 	 * MiMicJsAPIのバージョン文字列。
 	 * @name MiMicJS#VERSION
 	 */
-	NS.VERSION="MiMicJsAPI/2.0.3";
+	NS.VERSION="MiMicJsAPI/2.0.4";
 	/**
 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
 	 * @name MiMicJS.assertInt
@@ -5312,7 +5312,7 @@ var MI=MiMicJS;
  * <li>onGets:function(v) -
  * gets関数が完了したときに呼び出されます。
  * 	<ul>
- * 		<li>v:int - 読みだした文字列です。</li>
+ * 		<li>v:string|byte[] - 読みだした文字列、又はbyte配列です。値はmodeパラメータで変わります。</li>
  * 	</ul>
  * </li>
  * <li>onBaud:function() -
@@ -5618,6 +5618,8 @@ CLASS.prototype={
 	 * Generatorモードの時は、yieldと併用して完了を待機できます。
 	 * @name mbedJS.Serial#puts
 	 * @function
+	 * @param {string|byte[]}
+	 * 文字列の時はstring,バイナリの時はバイト配列を指定します。
 	 * @return　{int}
 	 * Callbackモードの時はRPCメソッドのインデクスを返します。
 	 * @return　{int}
@@ -5630,7 +5632,17 @@ CLASS.prototype={
 			MI._assertYield.call(_t);
 			var cb=MI._getCb(arguments,_t._event.onPuts);
 			_t._lc=CLASS.puts;
-			return _t._mcu.rpc(_t.RPC_NS+":puts",_t._oid+",\""+i_s+"\"",
+			//i_sの型チェック
+			var s;
+			var method;
+			if(MI.isArray(i_s)){
+				method=":puts_2";
+				s=MI.byteArray2bstr(i_s);
+			}else{
+				method=":puts";
+				s=i_s;
+			}
+			return _t._mcu.rpc(_t.RPC_NS+method,_t._oid+",\""+s+"\"",
 				function (j)
 				{
 					var v=j.result[0];
@@ -5682,23 +5694,35 @@ CLASS.prototype={
 	 * @function
 	 * @param {int} i_len
 	 * 受信メモリのサイズを指定します。256未満を指定してください。
+	 * @param {int} i_mode
+	 * 受信モードを指定します。'b'を指定した場合、バイナリで受信します。
+	 * 省略が可能です。省略時はテキストで受信します。
+	 * このパラメタは戻り値に影響します。
 	 * @return　{int}
 	 * Callbackモードの時はRPCメソッドのインデクスを返します。
-	 * @return　{string}
-	 * Generatorモードの時は受信した文字列を返します。
+	 * @return　{string|byte[]}
+	 * Generatorモードの時は受信した文字列、またはbyte配列を返します。
 	 */
-	gets:function Serial_gets(i_len)
+	gets:function Serial_gets(i_len,i_mode)
 	{
 		try{
 			var _t=this;
 			MI._assertYield.call(_t);
 			var cb=MI._getCb(arguments,_t._event.onGets);
 			_t._lc=CLASS.gets;
-			MI.assertInt(i_len);			
-			return _t._mcu.rpc(_t.RPC_NS+":gets",_t._oid+","+i_len,
+			MI.assertInt(i_len);
+			var m=0;//ascii
+			if(MI._getBaseArgsLen(arguments)==2 && i_mode=='b'){
+				m=1;//binary
+			}
+			return _t._mcu.rpc(_t.RPC_NS+(m==0?':gets':':gets_2'),_t._oid+","+i_len,
 				function (j)
 				{
 					var v=j.result[0];
+					if(m!=0){
+						//バイナリの場合(1)の場合は変換
+						v=MI.bstr2byteArray(v);
+					}
 					if(cb){cb(v);}
 					if(_t._gen){_t._gen.next(v);}
 					 _t._lc=null;

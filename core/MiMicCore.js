@@ -13,7 +13,7 @@ var MiMicJS={};
 	 * MiMicJsAPIのバージョン文字列。
 	 * @name MiMicJS#VERSION
 	 */
-	NS.VERSION="MiMicJsAPI/2.0.3";
+	NS.VERSION="MiMicJsAPI/2.0.4";
 	/**
 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
 	 * @name MiMicJS.assertInt
