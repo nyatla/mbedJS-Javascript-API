@@ -132,7 +132,7 @@ CLASS.prototype=
 	 * false - インスタンスは動作中です。使用可能です。
 	 */
 	hasError:function(){
-		return _t._has_error;
+		return this._has_error;
 	},
 	/**
 	 * Generatorモードのときに使用する関数です。

@@ -1,0 +1,94 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+<script type="text/javascript">
+
+var PIN=mbedJS.PinName.p16;
+var HOST=location.host;
+
+
+var data=[0,0,0,0,0,0,0,0,0,0];
+function setValue(v)
+{
+	for(var i=0;i<data.length-1;i++){
+		data[i]=data[i+1];
+	}
+	data[data.length-1]=v;
+	for(var i=0;i<data.length;i++){
+		$("#p"+(i+1)).css("width",parseInt(data[i]/65536*100)+"%");
+//		$("#p"+(i+1)).css("width","100%");
+	}
+}
+function main(mcu)
+{
+	var v = 1;
+	var pin = new mbedJS.AnalogIn(mcu,PIN,{
+		onNew : function()
+		{
+			function f(){
+				pin.read_u16(function(v){
+					setValue(v);
+					setTimeout(f,20);
+				});
+			}
+			setTimeout(f,20);
+		}
+	});
+}
+
+$(document).ready(function(){
+	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+	var mcu = new mbedJS.Mcu(HOST,{
+		onNew : function() {
+			main(mcu);
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+});
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	.sl{
+		font-size:32pt;
+		margin:32px;
+	}
+
+	</style>
+</head>
+<body onload="">
+      <ul class="nav nav-tabs" role="tablist">
+        <li><a href="./welcome.html">Welcome</a></li>
+        <li><a href="./led1.html">Led1</a></li>
+        <li><a href="./analogin.html">AnalogIn</a></li>
+        <li><a href="./push_switch.html">PushSwitch</a></li>
+        <li><a href="./pwm.html">PwmOut</a></li>
+        <li><a href="./rpc_benchmark.html">RPC Benchmark</a></li>
+      </ul>
+	<div class="container">
+		<h1 class="text-center" id="title">Analog In</h1>
+		<div class="text-center" style="margin:50px;">
+			<div class="progress"><div  id="p1" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p2" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p3" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p4" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p5" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p6" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p7" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p8" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p9" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+			<div class="progress"><div  id="p10" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
+		</div>
+</div>
+</body>
+</html>

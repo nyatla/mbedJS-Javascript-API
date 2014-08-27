@@ -1,0 +1,92 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+
+<script type="text/javascript">
+
+var PIN=mbedJS.PinName.LED1;
+var HOST=location.host;
+var INIT_INTERVAL=100;
+
+
+
+var interval=INIT_INTERVAL;
+
+
+//vは0-100
+function setLabel(v)
+{
+	$("#pvt").html(v+"Hz");
+}
+
+var count=0;
+function main(mcu)
+{
+	var c = 0;
+	var pin = new mbedJS.DigitalOut(mcu,PIN,{
+		onNew : function()
+		{
+			function f(){
+				pin.write(c%2,function(){f();});
+				c++;
+			}
+			function update(){
+				setLabel(c*2);
+				c=0;
+				setTimeout(update,500);
+			}
+			f();
+			setTimeout(update,500);
+		}
+	});
+}
+
+$(document).ready(function(){
+	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+	var mcu = new mbedJS.Mcu(HOST,{
+		onNew : function() {
+			main(mcu);
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+	setLabel(0);
+});
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	.sl{
+		font-size:24pt;
+		margin:32px;
+	}
+	#pvt{
+		font-size:32pt;
+		margin:32px;
+	}
+	#pv{
+		height:100px;
+	}
+
+	</style>
+</head>
+<body onload="">
+	<div class="container">
+		<h1 class="text-center" id="title">RPC Benchmark</h1>
+		<div class="text-center" style="margin:50px;">
+		</div>
+<div class="text-center" style="margin:50px;">
+	<div class="sl">RPC frequency</div>
+      <div id="pvt"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+
+<script type="text/javascript">
+
+var PINS=[mbedJS.PinName.LED1,mbedJS.PinName.LED2,mbedJS.PinName.LED3,mbedJS.PinName.LED4];
+var HOST=location.host;
+var INIT_INTERVAL=100;
+
+
+
+var interval=INIT_INTERVAL;
+
+function setValue(bus,c)
+{
+	var patt=[0x01,0x02,0x04,0x08];
+	var patt_idx=[0,1,2,3,2,1];
+	p=patt[patt_idx[c%patt_idx.length]];
+	bus.write(p,function(){
+		for(var i=0;i<4;i++){
+			if(((1<<i)&p)!=0){
+				$("#led"+(i+1)).css("background-color","blue");
+			}else{
+				$("#led"+(i+1)).css("background-color","#eeeeee");
+			}
+		}
+	});
+}
+//vは0-100
+function setUpdateInterval(v)
+{
+	$("#pvp").css("width",v+"%");	
+	interval=v*1000/100;
+	$("#pvt").html(interval+"ms");
+}
+
+function main(mcu)
+{
+	var c = 0;
+	var bus = new mbedJS.BusOut(mcu,PINS,{
+		onNew : function()
+		{
+			function f(){
+				setValue(bus,c++);
+				setTimeout(f,interval);
+			}
+			setTimeout(f,interval);
+		}
+	});
+}
+
+$(document).ready(function(){
+	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+	var mcu = new mbedJS.Mcu(HOST,{
+		onNew : function() {
+			main(mcu);
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+	$("#btn_10ms").click(function(){
+		interval=10;
+	});	
+	$("#btn_100ms").click(function(){
+		interval=100;
+	});	
+	$("#btn_1s").click(function(){
+		interval=1000;
+	});
+	$("#pv").mousemove(function(e){
+		var t=$("#pv").offset();
+		var pos={x:e.clientX-t.left,y:e.clientY-t.top}
+		var v=parseInt(pos.x/$("#pv").width()*100);
+		setUpdateInterval(v);
+	});
+	setUpdateInterval(50);
+
+});
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	.sl,#pvt{
+		font-size:24pt;
+		margin:32px;
+	}
+	#pv{
+		height:100px;
+	}
+
+	</style>
+</head>
+<body onload="">
+	<div class="container">
+		<h1 class="text-center" id="title">LED blink</h1>
+		<div class="text-center" style="margin:50px;">
+        <div id="led1" class="sl label label-primary">&nbsp;</div>
+        <div id="led2" class="sl label label-primary">&nbsp;</div>
+        <div id="led3" class="sl label label-primary">&nbsp;</div>
+        <div id="led4" class="sl label label-primary">&nbsp;</div>
+		</div>
+<div class="text-center" style="margin:50px;">
+	<div class="sl">Interval</div>
+      <div id="pv" class="progress">
+        <div id="pvp" class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+      </div>
+      <div id="pvt"></div>
+</div>
+</body>
+</html>

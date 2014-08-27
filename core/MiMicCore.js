@@ -13,7 +13,7 @@ var MiMicJS={};
 	 * MiMicJsAPIのバージョン文字列。
 	 * @name MiMicJS#VERSION
 	 */
-	NS.VERSION="MiMicJsAPI/2.0.4";
+	NS.VERSION="MiMicJsAPI/2.0.5";
 	/**
 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
 	 * @name MiMicJS.assertInt
@@ -553,6 +553,9 @@ var MiMicJS={};
 		rtt:0,
 		/** メソッドIDカウンタ。sendJsonを実行する毎にインクリメントされます。*/
 		_method_id:0,
+		_createSocket:function(i_path){
+			return new WebSocket(i_path);
+		},
 		/**
 		 * RPCコネクションを開きます。
 		 * 関数が終了するとonOpenイベントをコールバックします。
@@ -570,7 +573,7 @@ var MiMicJS={};
 			
 			var q=new Array();
 			var ev=this._event;
-			var ws=new WebSocket(i_url);
+			var ws=this._createSocket(i_url);
 			ws.onopen = function(){
 				if(ev.onOpen){ev.onOpen();}
 			}
