@@ -1,0 +1,169 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * @fileOverview LM75Bクラスを定義します。
+<span class='line'>  3</span>  */</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">NS</span><span class="PUNC">=</span><span class="NAME">mbedJS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  6</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">MI</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  7</span> 
+<span class='line'>  8</span> 
+<span class='line'>  9</span> </span><span class="COMM">/**
+<span class='line'> 10</span>  * LM75Bを制御するクラスです。
+<span class='line'> 11</span>  * &lt;a href="https://github.com/hara41/test_LM75B/tree/master/test_LM75B">test_LM75B&lt;/a>と同等の機能を持ちます。
+<span class='line'> 12</span>  * @constructor
+<span class='line'> 13</span>  * @name mbedJS.LM75B
+<span class='line'> 14</span>  * @param {mbedJS.I2C|mbedJS.MCU} i_parent
+<span class='line'> 15</span>  * インスタンスをバインドするオブジェクトです。MCUの場合はI2Cバスを占有します。
+<span class='line'> 16</span>  * @param {addr:int]|[addr:int,sda:PinName,scl:PinName]} i_params
+<span class='line'> 17</span>  * mbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。
+<span class='line'> 18</span>  * @param {HashMap|Generator|function} i_handler
+<span class='line'> 19</span>  * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
+<span class='line'> 20</span>  * &lt;p>
+<span class='line'> 21</span>  * {HashMap} 非同期イベントの共通イベントハンドラです。
+<span class='line'> 22</span>  * &lt;ul>
+<span class='line'> 23</span>  * &lt;li>onNew:function() -
+<span class='line'> 24</span>  * インスタンスが使用可能になった時に呼び出されます。
+<span class='line'> 25</span>  * &lt;/li>
+<span class='line'> 26</span>  * &lt;li>onRead:function(v) -
+<span class='line'> 27</span>  * getRead関数のコールバック関数です。
+<span class='line'> 28</span>  * 	&lt;ul>
+<span class='line'> 29</span>  * 		&lt;li>v:float - 戻り値です。&lt;/li>
+<span class='line'> 30</span>  * 	&lt;/ul>
+<span class='line'> 31</span>  * &lt;/li>
+<span class='line'> 32</span>  * &lt;/ul>
+<span class='line'> 33</span>  * &lt;p>
+<span class='line'> 34</span>  * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
+<span class='line'> 35</span>  * &lt;/p>
+<span class='line'> 36</span>  * &lt;p>
+<span class='line'> 37</span>  * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
+<span class='line'> 38</span>  * メンバ関数のイベントハンドラは個別に設定してください。
+<span class='line'> 39</span>  * &lt;/p>
+<span class='line'> 40</span>  * @return {mbedJS.LM75B}
+<span class='line'> 41</span>  * @example //Callback
+<span class='line'> 42</span>  * @example //Generator
+<span class='line'> 43</span>  * @example //Callback hell
+<span class='line'> 44</span>  */</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">CLASS</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">LM75B</span><span class="PUNC">(</span><span class="NAME">i_parent</span><span class="PUNC">,</span><span class="NAME">i_params</span><span class="PUNC">,</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">	</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">		</span><span class="NAME">_t._lc</span><span class="PUNC">=</span><span class="NAME">CLASS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cb</span><span class="PUNC">=</span><span class="NAME">MI._initHandler.call</span><span class="PUNC">(</span><span class="NAME">_t</span><span class="PUNC">,</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">		</span><span class="NAME">MI.assertInt</span><span class="PUNC">(</span><span class="NAME">i_params</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">		</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">		</span><span class="COMM">//パラメータ退避</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">		</span><span class="NAME">_t._i2c_addr</span><span class="PUNC">=</span><span class="NAME">i_params</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">		</span><span class="COMM">//i2cが準備できたら実行する関数</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">		</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">_onNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">			</span><span class="COMM">//control command</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">			</span><span class="NAME">_t._i2c.write</span><span class="PUNC">(</span><span class="NAME">_t._i2c_addr</span><span class="PUNC">,</span><span class="PUNC">[</span><span class="NUMB">0x01</span><span class="PUNC">,</span><span class="NUMB">0x00</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">			</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">cb</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">cb</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._gen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._gen.next</span><span class="PUNC">(</span><span class="NAME">_t</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">		</span><span class="COMM">//MCUかI2Cか調べる</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">i_parent.RPC_NS</span><span class="PUNC">!=</span><span class="NAME">NS.I2C.prototype.RPC_NS</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">			</span><span class="NAME">_t._i2c_attached</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">			</span><span class="NAME">_t._i2c</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">NS.I2C</span><span class="PUNC">(</span><span class="NAME">i_parent</span><span class="PUNC">,</span><span class="PUNC">[</span><span class="NAME">i_params</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="NAME">i_params</span><span class="PUNC">[</span><span class="NUMB">2</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">				</span><span class="NAME">_t._i2c.frequency</span><span class="PUNC">(</span><span class="NUMB">10000</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">					</span><span class="NAME">_onNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">else</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">			</span><span class="COMM">//I2Cならそのまんま使う</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">			</span><span class="NAME">_t._i2c</span><span class="PUNC">=</span><span class="NAME">i_parent</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">			</span><span class="NAME">_onNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">		</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="NAME">CLASS.prototype</span><span class="PUNC">=</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">	</span><span class="COMM">/** @private */</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">	</span><span class="NAME">RPC_NS</span><span class="PUNC">:</span><span class="STRN">"mbedJS:LM75B"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">	</span><span class="COMM">/** @private 最後にコールしたAPIです。*/</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">	</span><span class="NAME">_lc</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">	</span><span class="COMM">/** @private Generatorモードの場合にGeneratorオブジェクトを保持します。*/</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">	</span><span class="NAME">_gen</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">	</span><span class="COMM">/** @private コールバック関数の連想配列です。要素はコンストラクタを参照してください。*/</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">	</span><span class="NAME">_event</span><span class="PUNC">:</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">	</span><span class="NAME">_i2c</span><span class="PUNC">:</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">	</span><span class="NAME">_i2c_addr</span><span class="PUNC">:</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">	</span><span class="NAME">_i2c_attached</span><span class="PUNC">:</span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 95</span> 	 * Generatorモードのときに使用する関数です。
+<span class='line'> 96</span> 	 * Generatorモードの時は、yieldと併用してnew LM75B()の完了を待ちます。
+<span class='line'> 97</span> 	 * @name mbedJS.LM75B#waitForNew
+<span class='line'> 98</span> 	 * @function
+<span class='line'> 99</span> 	 */</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">	</span><span class="NAME">waitForNew</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">LM75B_waitForNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._lc</span><span class="PUNC">!=</span><span class="NAME">CLASS</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">MI.Error.NG_ILLEGAL_CALL</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">			</span><span class="NAME">this._lc</span><span class="PUNC">=</span><span class="NAME">CLASS.waitForNew</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>110</span> 	 * read相当の関数です。
+<span class='line'>111</span> 	 * 関数の完了時にonReadイベントが発生します。
+<span class='line'>112</span> 	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+<span class='line'>113</span> 	 * @name mbedJS.LM75B#read
+<span class='line'>114</span> 	 * @function
+<span class='line'>115</span> 	 * @return　{int}
+<span class='line'>116</span> 	 * Generatorモードの時はonReadコールバック引数の値を返します。
+<span class='line'>117</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">	</span><span class="NAME">read</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">LM75B_read</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cb</span><span class="PUNC">=</span><span class="NAME">MI._getCb</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">,</span><span class="NAME">_t._event.onRead</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			</span><span class="NAME">MI._assertYield.call</span><span class="PUNC">(</span><span class="NAME">_t</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">			</span><span class="NAME">_t._lc</span><span class="PUNC">=</span><span class="NAME">CLASS.read</span><span class="PUNC">;</span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">			</span><span class="NAME">_t._i2c.write</span><span class="PUNC">(</span><span class="NAME">_t._i2c_addr</span><span class="PUNC">,</span><span class="PUNC">[</span><span class="NUMB">0x00</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="KEYW">true</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">				</span><span class="NAME">_t._i2c.read</span><span class="PUNC">(</span><span class="NAME">_t._i2c_addr</span><span class="PUNC">,</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="KEYW">false</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ret</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">v.data</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">&lt;&lt;</span><span class="NUMB">8</span><span class="PUNC">)</span><span class="PUNC">|</span><span class="NAME">v.data</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">/</span><span class="NUMB">256.0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">cb</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">cb</span><span class="PUNC">(</span><span class="NAME">ret</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">					</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._gen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._gen.next</span><span class="PUNC">(</span><span class="NAME">ret</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">					 </span><span class="NAME">_t._lc</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>138</span> 	 * MCUに生成されているオブジェクトを破棄します。
+<span class='line'>139</span> 	 * @name mbedJS.LM75B#dispose
+<span class='line'>140</span> 	 * @function
+<span class='line'>141</span> 	 */</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">	</span><span class="NAME">dispose</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">LM75B_dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">cb</span><span class="PUNC">=</span><span class="NAME">MI._getCb</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">,</span><span class="NAME">_t._event.onDispose</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">			</span><span class="NAME">MI._assertYield.call</span><span class="PUNC">(</span><span class="NAME">_t</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">			</span><span class="COMM">//自己生成したI2Cの場合のみ削除</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._i2c_attached</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">				</span><span class="NAME">_t._i2c.dispose</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">					</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">cb</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">cb</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">					</span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._gen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._gen.next</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">			</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="NAME">NS.LM75B</span><span class="PUNC">=</span><span class="NAME">CLASS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>162</span> </span></pre></body></html>
