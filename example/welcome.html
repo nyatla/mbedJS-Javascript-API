@@ -1,5 +1,139 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
 <html>
-<body>
-Welcome
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+
+<script type="text/javascript">
+
+var PWM_PIN=mbedJS.PinName.p26;
+var AIN_PIN=mbedJS.PinName.p16;
+var HOST=location.host;
+
+function setLabel(v)
+{
+	var p;
+	if(v<5){
+		p=1;
+	}else if(v<30){
+		p=2;
+	}else if(v<85){
+		p=3;
+	}else{
+		p=4;
+	}
+	for(var i=1;i<=4;i++){
+		$("#s"+i).hide();
+	}
+	$("#s"+p).show();
+}
+
+function main(mcu)
+{
+	var pwm_interval=2500;
+	var c = 0;
+	var pwm_tid=null;
+	var pwm = new mbedJS.PwmOut(mcu,PWM_PIN,function(){
+		pwm.period_ms(20,function(){
+			function f(){
+				var now=(new Date()).getTime();
+				var pulse_width=Math.sin(c/(3.14*2*180)*300)*50+50;
+				pwm.pulsewidth_us(parseInt(1000+(pulse_width/100*1000)));
+				c++;
+				setTimeout(f,30+pwm_interval*170);
+			}
+			setTimeout(f,170);
+		});
+	});
+	var pin = new mbedJS.AnalogIn(mcu,AIN_PIN,{
+		onNew : function()
+		{
+			function f(){
+				pin.read_u16(function(v){
+					var t=((v/65536)-0.1);
+					if(t<0){t=0;}
+					t*=3;
+					if(t>1){t=1;}
+					pwm_interval=1-t;
+					$("#pvp").css("width",parseInt(t*100)+"%");					
+					setLabel(t*100);
+					setTimeout(f,30);
+				});
+			}
+			setTimeout(f,30);
+		}
+	});
+}
+
+$(document).ready(function(){
+	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+//	setLabel(false);
+	setLabel(0);
+
+	var mcu = new mbedJS.Mcu(HOST,{
+		onNew : function() {
+			main(mcu);
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+});
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	.sl,#pvt{
+		font-size:36pt;
+		margin:32px;
+	}
+	.s2{
+		font-size:48pt;
+		margin:32px;
+	}	
+	#pv{
+		height:30px;
+	}
+	#s4{
+		font-size:72pt;
+	}
+
+	</style>
+</head>
+<body onload="">
+      <ul class="nav nav-tabs" role="tablist">
+        <li><a href="http://192.168.128.39/">mbedJS</a></li>
+        <li><a href="./welcome.html">Welcome</a></li>
+        <li><a href="./led1.html">Led1</a></li>
+        <li><a href="./analogin.html">AnalogIn</a></li>
+        <li><a href="./push_switch.html">PushSwitch</a></li>
+        <li><a href="./pwm.html">PwmOut</a></li>
+        <li><a href="./rpc_benchmark.html">RPC Benchmark</a></li>
+      </ul>
+
+	<div class="container">
+	<h1 class="text-center" >Javascript/Processingでｴｪｪｪｪﾝﾍﾞｯﾄﾞしませんか？</h1>
+	<div class="text-center" >
+		<img src="mbeeeed.png" width="640px"/>
+	</div>
+<div class="text-center" style="margin:50px;">
+	<div class="sl"></div>
+      <div id="pv" class="progress">
+        <div id="pvp" class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+      </div>
+      <div id="pvt"></div>
+</div>
+<div class="text-center" style="">
+	<div id="s1" class="s2 label label-primary">みていってね！</div>
+	<div id="s2" class="s2 label label-primary">もっと近づいて！</div>
+	<div id="s3" class="s2 label label-primary">センサーに手をかざして！</div>
+	<div id="s4" class="s2 label label-primary">ｴｪｪｪｪﾝﾍﾞｯﾄﾞ!</div>
+</div>
 </body>
 </html>
