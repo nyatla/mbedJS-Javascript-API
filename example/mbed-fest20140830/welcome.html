@@ -11,54 +11,70 @@
 
 <script type="text/javascript">
 
-var PINS=[mbedJS.PinName.LED1,mbedJS.PinName.LED2,mbedJS.PinName.LED3,mbedJS.PinName.LED4];
+var PWM_PIN=mbed_PWM_PIN;
+var AIN_PIN=mbed_AIN_PIN;
 var HOST=location.host;
-var INIT_INTERVAL=100;
 
-
-
-var interval=INIT_INTERVAL;
-
-function setValue(bus,c)
+function setLabel(v)
 {
-	var patt=[0x01,0x02,0x04,0x08];
-	var patt_idx=[0,1,2,3,2,1];
-	p=patt[patt_idx[c%patt_idx.length]];
-	bus.write(p,function(){
-		for(var i=0;i<4;i++){
-			if(((1<<i)&p)!=0){
-				$("#led"+(i+1)).css("background-color","blue");
-			}else{
-				$("#led"+(i+1)).css("background-color","#eeeeee");
-			}
-		}
-	});
-}
-//vは0-100
-function setUpdateInterval(v)
-{
-	$("#pvp").css("width",v+"%");	
-	interval=v*1000/100;
-	$("#pvt").html(interval+"ms");
+	var p;
+	if(v<5){
+		p=1;
+	}else if(v<30){
+		p=2;
+	}else if(v<85){
+		p=3;
+	}else{
+		p=4;
+	}
+	for(var i=1;i<=4;i++){
+		$("#s"+i).hide();
+	}
+	$("#s"+p).show();
 }
 
 function main(mcu)
 {
+	var pwm_interval=2500;
 	var c = 0;
-	var bus = new mbedJS.BusOut(mcu,PINS,{
+	var pwm_tid=null;
+	var pwm = new mbedJS.PwmOut(mcu,PWM_PIN,function(){
+		pwm.period_ms(20,function(){
+			function f(){
+				var now=(new Date()).getTime();
+				var pulse_width=Math.sin(c/(3.14*2*180)*300)*50+50;
+				pwm.pulsewidth_us(parseInt(1000+(pulse_width/100*1000)));
+				c++;
+				setTimeout(f,30+pwm_interval*170);
+			}
+			setTimeout(f,170);
+		});
+	});
+	var pin = new mbedJS.AnalogIn(mcu,AIN_PIN,{
 		onNew : function()
 		{
 			function f(){
-				setValue(bus,c++);
-				setTimeout(f,interval);
+				pin.read_u16(function(v){
+					var t=((v/65536)-0.1);
+					if(t<0){t=0;}
+					t*=3;
+					if(t>1){t=1;}
+					pwm_interval=1-t;
+					$("#pvp").css("width",parseInt(t*100)+"%");					
+					setLabel(t*100);
+					setTimeout(f,30);
+				});
 			}
-			setTimeout(f,interval);
+			setTimeout(f,30);
 		}
 	});
 }
 
 $(document).ready(function(){
 	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+//	setLabel(false);
+	setLabel(0);
+
 	var mcu = new mbedJS.Mcu(HOST,{
 		onNew : function() {
 			main(mcu);
@@ -67,23 +83,6 @@ $(document).ready(function(){
 			alert("Error!");
 		}
 	});
-	$("#btn_10ms").click(function(){
-		interval=10;
-	});	
-	$("#btn_100ms").click(function(){
-		interval=100;
-	});	
-	$("#btn_1s").click(function(){
-		interval=1000;
-	});
-	$("#pv").mousemove(function(e){
-		var t=$("#pv").offset();
-		var pos={x:e.clientX-t.left,y:e.clientY-t.top}
-		var v=parseInt(pos.x/$("#pv").width()*100);
-		setUpdateInterval(v);
-	});
-	setUpdateInterval(50);
-
 });
 </script>
 	<style>
@@ -91,11 +90,18 @@ $(document).ready(function(){
 		text-align:center;
 	}
 	.sl,#pvt{
-		font-size:24pt;
+		font-size:36pt;
 		margin:32px;
 	}
+	.s2{
+		font-size:48pt;
+		margin:32px;
+	}	
 	#pv{
-		height:200px;
+		height:30px;
+	}
+	#s4{
+		font-size:72pt;
 	}
 
 	</style>
@@ -112,19 +118,22 @@ $(document).ready(function(){
       </ul>
 
 	<div class="container">
-		<h1 class="text-center" id="title">LED blink</h1>
-		<div class="text-center" style="margin:50px;">
-        <div id="led1" class="sl label label-primary">&nbsp;</div>
-        <div id="led2" class="sl label label-primary">&nbsp;</div>
-        <div id="led3" class="sl label label-primary">&nbsp;</div>
-        <div id="led4" class="sl label label-primary">&nbsp;</div>
-		</div>
+	<h1 class="text-center" >Javascript/Processingでｴｪｪｪｪﾝﾍﾞｯﾄﾞしませんか？</h1>
+	<div class="text-center" >
+		<img src="mbeeeed.png" width="640px"/>
+	</div>
 <div class="text-center" style="margin:50px;">
-	<div class="sl">Interval</div>
+	<div class="sl"></div>
       <div id="pv" class="progress">
         <div id="pvp" class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
       </div>
       <div id="pvt"></div>
+</div>
+<div class="text-center" style="">
+	<div id="s1" class="s2 label label-primary">みていってね！</div>
+	<div id="s2" class="s2 label label-primary">もっと近づいて！</div>
+	<div id="s3" class="s2 label label-primary">センサーに手をかざして！</div>
+	<div id="s4" class="s2 label label-primary">ｴｪｪｪｪﾝﾍﾞｯﾄﾞ!</div>
 </div>
 </body>
 </html>

@@ -11,41 +11,40 @@
 
 <script type="text/javascript">
 
-var PIN=mbedJS.PinName.p26;
+var PIN=mbed_PUSH_SW;
 var HOST=location.host;
-var UPDATE_INTERVAL=33;
 
 
-
-var pulse_width=100;
-
-//vは0-100
-function setPulseWidth(v)
+function setLabel(v)
 {
-	$("#pvp").css("width",v+"%");	
-	$("#pvt").html(v+"%");
-	pulse_width=v;
+	if(!v){
+		$("#on").show();
+		$("#off").hide();
+	}else{
+		$("#on").hide();
+		$("#off").show();
+	}
 }
-
 function main(mcu)
 {
-	var c = 0;
-	var pwm = new mbedJS.PwmOut(mcu,PIN,function(){
-		pwm.period_ms(20,function(){
+	var v = 1;
+	var pin = new mbedJS.DigitalIn(mcu,PIN,{
+		onNew : function()
+		{
 			function f(){
-//				setPulseWidth(pwm,pulse_width);
-console.info(parseInt(1000+(pulse_width/100*1000)));
-				pwm.pulsewidth_us(parseInt(1000+(pulse_width/100*1000)));
-				setTimeout(f,UPDATE_INTERVAL);
+				pin.read(function(v){
+					setLabel(v!=0);
+					setTimeout(f,30);
+				});
 			}
-			setTimeout(f,UPDATE_INTERVAL);
-		});
+			setTimeout(f,30);
+		}
 	});
 }
 
 $(document).ready(function(){
 	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
-//	setLabel(false);
+	setLabel(false);
 	var mcu = new mbedJS.Mcu(HOST,{
 		onNew : function() {
 			main(mcu);
@@ -54,26 +53,15 @@ $(document).ready(function(){
 			alert("Error!");
 		}
 	});
-	$("#pv").mousemove(function(e){
-		var t=$("#pv").offset();
-		var pos={x:e.clientX-t.left,y:e.clientY-t.top}
-		var v=parseInt(pos.x/$("#pv").width()*100);
-		setPulseWidth(v);
-	});
-	setPulseWidth(50);
-
 });
 </script>
 	<style>
 	.header{
 		text-align:center;
 	}
-	.sl,#pvt{
-		font-size:24pt;
+	.sl{
+		font-size:32pt;
 		margin:32px;
-	}
-	#pv{
-		height:200px;
 	}
 
 	</style>
@@ -90,13 +78,11 @@ $(document).ready(function(){
       </ul>
 
 	<div class="container">
-		<h1 class="text-center" id="title">PwmOut</h1>
-<div class="text-center" style="margin:50px;">
-	<div class="sl"></div>
-      <div id="pv" class="progress">
-        <div id="pvp" class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
-      </div>
-      <div id="pvt"></div>
+		<h1 class="text-center" id="title">Push Switch</h1>
+		<div class="text-center" style="margin:50px;">
+        <div id="on" class="sl label label-danger">ON</div>
+        <div id="off" class="sl label label-primary">OFF</div>
+	</div>
 </div>
 </body>
 </html>
