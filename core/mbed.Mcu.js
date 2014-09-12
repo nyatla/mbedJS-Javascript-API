@@ -12,6 +12,7 @@ var MI=MiMicJS;
  * @constructor
  * @param {string} i_url
  * 接続先のMiMicRPCサービスのアドレスを指定します。
+ * ws://プレフィクスが付いた場合はそのURLに接続します。wsプレフィクスがない場合は、ws://{i_url}/rpcに接続します。
  * @param {HashMap|Generator} i_handler
  * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
@@ -111,7 +112,9 @@ var CLASS=function Mcu(i_url,i_handler)
 		}
 	});
 	//MCUへ接続
-	this._rpc.open('ws://'+i_url+'/rpc/');
+	var path=i_url.match(/ws:\/\//)==null?'ws://'+i_url+'/rpc/':i_url;
+	alert(path);
+	this._rpc.open(path);
 }
 CLASS.prototype=
 {
