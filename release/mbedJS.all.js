@@ -13,7 +13,7 @@ var MiMicJS={};
 	 * MiMicJsAPIのバージョン文字列。
 	 * @name MiMicJS#VERSION
 	 */
-	NS.VERSION="MiMicJsAPI/2.0.6";
+	NS.VERSION="MiMicJsAPI/2.0.7";
 	/**
 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
 	 * @name MiMicJS.assertInt
@@ -2522,8 +2522,7 @@ var CLASS=function Mcu(i_url,i_handler)
 		}
 	});
 	//MCUへ接続
-	var path=i_url.match(/ws:\/\//)==null?'ws://'+i_url+'/rpc/':i_url;
-	alert(path);
+	var path=i_url.match(/^ws:\/\/.*/)==null?'ws://'+i_url+'/rpc/':i_url;
 	this._rpc.open(path);
 }
 CLASS.prototype=
