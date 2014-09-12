@@ -67,6 +67,10 @@ $(document).ready(function(){
 			alert("Error!");
 		}
 	});
+	$("#mbed_top").click(function(){
+		location.href="http://"+HOST+"/";
+	});
+	
 	$("#btn_10ms").click(function(){
 		interval=10;
 	});	
@@ -102,7 +106,7 @@ $(document).ready(function(){
 </head>
 <body onload="">
       <ul class="nav nav-tabs" role="tablist">
-        <li><a href="http://192.168.128.39/">mbedJS</a></li>
+        <li><a href="#" id="mbed_top">mbedJS</a></li>
         <li><a href="./welcome.html">Welcome</a></li>
         <li><a href="./led1.html">Led1</a></li>
         <li><a href="./analogin.html">AnalogIn</a></li>

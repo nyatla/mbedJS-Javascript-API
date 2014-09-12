@@ -20,7 +20,7 @@
 <span class='line'> 13</span> 	 * MiMicJsAPIのバージョン文字列。
 <span class='line'> 14</span> 	 * @name MiMicJS#VERSION
 <span class='line'> 15</span> 	 */</span><span class="WHIT">
-<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="NAME">NS.VERSION</span><span class="PUNC">=</span><span class="STRN">"MiMicJsAPI/2.0.4"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">	</span><span class="NAME">NS.VERSION</span><span class="PUNC">=</span><span class="STRN">"MiMicJsAPI/2.0.6"</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 17</span> </span><span class="WHIT">	</span><span class="COMM">/**
 <span class='line'> 18</span> 	 * 配列要素、又は値がすべてInt値でない場合に例外を起こします。
 <span class='line'> 19</span> 	 * @name MiMicJS.assertInt
@@ -560,139 +560,142 @@
 <span class='line'>553</span> </span><span class="WHIT">		</span><span class="NAME">rtt</span><span class="PUNC">:</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>554</span> </span><span class="WHIT">		</span><span class="COMM">/** メソッドIDカウンタ。sendJsonを実行する毎にインクリメントされます。*/</span><span class="WHIT">
 <span class='line'>555</span> </span><span class="WHIT">		</span><span class="NAME">_method_id</span><span class="PUNC">:</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>556</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>557</span> 		 * RPCコネクションを開きます。
-<span class='line'>558</span> 		 * 関数が終了するとonOpenイベントをコールバックします。
-<span class='line'>559</span> 		 * @name MiMicJS.Rpc#open
-<span class='line'>560</span> 		 * @function
-<span class='line'>561</span> 		 * @param i_url
-<span class='line'>562</span> 		 * ws://から始まるWebsocketサービスURLを指定します。
-<span class='line'>563</span> 		 */</span><span class="WHIT">
-<span class='line'>564</span> </span><span class="WHIT">		</span><span class="NAME">open</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">open</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>565</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>568</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>569</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>570</span> </span><span class="WHIT">			</span><span class="WHIT">
-<span class='line'>571</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">q</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>572</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ev</span><span class="PUNC">=</span><span class="NAME">this._event</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>573</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ws</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">WebSocket</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>574</span> </span><span class="WHIT">			</span><span class="NAME">ws.onopen</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>575</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onOpen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onOpen</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>576</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>577</span> </span><span class="WHIT">			</span><span class="NAME">ws.onclose</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>578</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onClose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>579</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>580</span> </span><span class="WHIT">			</span><span class="NAME">ws.error</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>581</span> </span><span class="WHIT">				</span><span class="NAME">_t.shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>582</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onError</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>583</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>584</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>585</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>586</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>587</span> </span><span class="WHIT">			</span><span class="NAME">ws.onmessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>588</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>589</span> </span><span class="WHIT">				</span><span class="COMM">//ストリームからJSONを抽出。"のエスケープには対応しない。</span><span class="WHIT">
-<span class='line'>590</span> </span><span class="WHIT">				</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">e.data.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>591</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">=</span><span class="NAME">e.data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>592</span> </span><span class="WHIT">					</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">rxst</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>593</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>594</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">!=</span><span class="STRN">'"'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>595</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>596</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>597</span> </span><span class="WHIT">						</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>598</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>599</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">!=</span><span class="STRN">'{'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>600</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>601</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>602</span> </span><span class="WHIT">						</span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">'({'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>603</span> </span><span class="WHIT">						</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>604</span> </span><span class="WHIT">						</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>605</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>606</span> </span><span class="WHIT">						</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>607</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'"'</span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>608</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">2</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>609</span> </span><span class="WHIT">							</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>610</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'}'</span><span class="PUNC">:</span><span class="WHIT">
-<span class='line'>611</span> </span><span class="WHIT">							</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="STRN">'})'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>612</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>613</span> </span><span class="WHIT">							</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>614</span> </span><span class="COMM">//								log(rx);//Debug</span><span class="WHIT">
-<span class='line'>615</span> </span><span class="WHIT">								</span><span class="COMM">//JSONがたぶん確定</span><span class="WHIT">
-<span class='line'>616</span> </span><span class="WHIT">								</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">=</span><span class="NAME">eval</span><span class="PUNC">(</span><span class="NAME">rx</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>617</span> </span><span class="WHIT">								</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i2</span><span class="PUNC">=</span><span class="NAME">q.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">>=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">--</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>618</span> </span><span class="WHIT">									</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">==</span><span class="NAME">j.id</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>619</span> </span><span class="WHIT">										</span><span class="COMM">//id一致→コールバック</span><span class="WHIT">
-<span class='line'>620</span> </span><span class="WHIT">										</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">qi</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>621</span> </span><span class="WHIT">										</span><span class="NAME">q.splice</span><span class="PUNC">(</span><span class="NAME">i2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>622</span> </span><span class="WHIT">										</span><span class="COMM">//コールバック必要？</span><span class="WHIT">
-<span class='line'>623</span> </span><span class="WHIT">										</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">(</span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>624</span> </span><span class="WHIT">										</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>625</span> </span><span class="WHIT">									</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>626</span> </span><span class="WHIT">								</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>627</span> </span><span class="WHIT">							</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>628</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>629</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>630</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>631</span> </span><span class="WHIT">					</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>632</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>633</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>634</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>635</span> </span><span class="WHIT">			</span><span class="NAME">this._q</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>636</span> </span><span class="WHIT">			</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="NAME">ws</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>637</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>638</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>639</span> 		 * 接続中のRPCコネクションを閉じます。
-<span class='line'>640</span> 		 * 関数が終了するとonCloseイベントをコールバックします。
-<span class='line'>641</span> 		 * @name MiMicJS.Rpc#close
-<span class='line'>642</span> 		 * @function
-<span class='line'>643</span> 		 */</span><span class="WHIT">
-<span class='line'>644</span> </span><span class="WHIT">		</span><span class="NAME">close</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>645</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>646</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this._ws.readyState</span><span class="PUNC">==</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>647</span> </span><span class="WHIT">				</span><span class="NAME">this._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>648</span> </span><span class="WHIT">				</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>649</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>650</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>651</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>652</span> 		 * RPC回線を確実に閉じます。
-<span class='line'>653</span> 		 * この関数を実行すると、すべてのコールバックイベントはキャンセルされます。
-<span class='line'>654</span> 		 * @name MiMicJS.Rpc#shutdown
-<span class='line'>655</span> 		 * @function
-<span class='line'>656</span> 		 */</span><span class="WHIT">
-<span class='line'>657</span> </span><span class="WHIT">		</span><span class="NAME">shutdown</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>658</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>659</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>660</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>661</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onopen</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>662</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onmessage</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>663</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onclose</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>664</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onerror</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>665</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>666</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>667</span> </span><span class="WHIT">		</span><span class="COMM">/**
-<span class='line'>668</span> 		 * 非同期でJSON RPCメソッドを送信します。
-<span class='line'>669</span> 		 * @name MiMicJS.Rpc#sendMethod
-<span class='line'>670</span> 		 * @function
-<span class='line'>671</span> 		 * @param {string} i_method
-<span class='line'>672</span> 		 * RPCメソッドの名前です。
-<span class='line'>673</span> 		 * @param {string} i_params
-<span class='line'>674</span> 		 * カンマ区切りのJSONスタイルの文字列です。この文字列は[....]に埋め込まれます。エスケープ文字列は使用できません。
-<span class='line'>675</span> 		 * @param {function(json)}i_callback
-<span class='line'>676</span> 		 * Resultを受け取るコールバック関数です。jsonにはResult JSONをパースしたオブジェクトが入ります。
-<span class='line'>677</span> 		 * @return {int}
-<span class='line'>678</span> 		 * メソッドIDを返します。
-<span class='line'>679</span> 		 */</span><span class="WHIT">
-<span class='line'>680</span> </span><span class="WHIT">		</span><span class="NAME">sendMethod</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">callJsonRpc</span><span class="PUNC">(</span><span class="NAME">i_method</span><span class="PUNC">,</span><span class="NAME">i_params</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>681</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>682</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">=</span><span class="STRN">"{\"jsonrpc\":\"2.0\",\"method\":\""</span><span class="PUNC">+</span><span class="NAME">i_method</span><span class="PUNC">+</span><span class="STRN">"\",\"params\":["</span><span class="PUNC">+</span><span class="NAME">i_params</span><span class="PUNC">+</span><span class="STRN">"],\"id\":"</span><span class="PUNC">+</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="STRN">"}"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>683</span> </span><span class="COMM">//			log(v);//Debug</span><span class="WHIT">
-<span class='line'>684</span> </span><span class="WHIT">			</span><span class="NAME">this._ws.send</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>685</span> </span><span class="WHIT">			</span><span class="NAME">this._q.push</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="NAME">this._method_id</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="COMM">//キューに記録</span><span class="WHIT">
-<span class='line'>686</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="PUNC">(</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0x0fffffff</span><span class="PUNC">;</span><span class="COMM">//IDインクリメント</span><span class="WHIT">
-<span class='line'>687</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._method_id</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>688</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>689</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>690</span> 
-<span class='line'>691</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'>556</span> </span><span class="WHIT">		</span><span class="NAME">_createSocket</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">i_path</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>557</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">WebSocket</span><span class="PUNC">(</span><span class="NAME">i_path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>558</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>559</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>560</span> 		 * RPCコネクションを開きます。
+<span class='line'>561</span> 		 * 関数が終了するとonOpenイベントをコールバックします。
+<span class='line'>562</span> 		 * @name MiMicJS.Rpc#open
+<span class='line'>563</span> 		 * @function
+<span class='line'>564</span> 		 * @param i_url
+<span class='line'>565</span> 		 * ws://から始まるWebsocketサービスURLを指定します。
+<span class='line'>566</span> 		 */</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">		</span><span class="NAME">open</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">open</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">				</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MiMicException</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">			</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">q</span><span class="PUNC">=</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Array</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>575</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ev</span><span class="PUNC">=</span><span class="NAME">this._event</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>576</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ws</span><span class="PUNC">=</span><span class="NAME">this._createSocket</span><span class="PUNC">(</span><span class="NAME">i_url</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>577</span> </span><span class="WHIT">			</span><span class="NAME">ws.onopen</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>578</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onOpen</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onOpen</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>579</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>580</span> </span><span class="WHIT">			</span><span class="NAME">ws.onclose</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>581</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onClose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>582</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>583</span> </span><span class="WHIT">			</span><span class="NAME">ws.onerror</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>584</span> </span><span class="WHIT">				</span><span class="NAME">_t.shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>585</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">ev.onError</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">ev.onError</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>586</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>587</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">""</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>588</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>589</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>590</span> </span><span class="WHIT">			</span><span class="NAME">ws.onmessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>591</span> </span><span class="WHIT">			</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>592</span> </span><span class="WHIT">				</span><span class="COMM">//ストリームからJSONを抽出。"のエスケープには対応しない。</span><span class="WHIT">
+<span class='line'>593</span> </span><span class="WHIT">				</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">&lt;</span><span class="NAME">e.data.length</span><span class="PUNC">;</span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>594</span> </span><span class="WHIT">					</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">=</span><span class="NAME">e.data</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>595</span> </span><span class="WHIT">					</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">rxst</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>596</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>597</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">==</span><span class="STRN">'"'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>598</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>599</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>600</span> </span><span class="WHIT">						</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>601</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>602</span> </span><span class="WHIT">						</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">!=</span><span class="STRN">'{'</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>603</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>604</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>605</span> </span><span class="WHIT">						</span><span class="NAME">rx</span><span class="PUNC">=</span><span class="STRN">'({'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>606</span> </span><span class="WHIT">						</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>607</span> </span><span class="WHIT">						</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>608</span> </span><span class="WHIT">					</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>609</span> </span><span class="WHIT">						</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="NAME">t</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>610</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'"'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>611</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">2</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>612</span> </span><span class="WHIT">							</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>613</span> </span><span class="WHIT">						</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'}'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>614</span> </span><span class="WHIT">							</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="STRN">'})'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>615</span> </span><span class="WHIT">							</span><span class="NAME">rxst</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>616</span> </span><span class="WHIT">							</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>617</span> </span><span class="COMM">//								log(rx);//Debug</span><span class="WHIT">
+<span class='line'>618</span> </span><span class="WHIT">								</span><span class="COMM">//JSONがたぶん確定</span><span class="WHIT">
+<span class='line'>619</span> </span><span class="WHIT">								</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">j</span><span class="PUNC">=</span><span class="NAME">eval</span><span class="PUNC">(</span><span class="NAME">rx</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>620</span> </span><span class="WHIT">								</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i2</span><span class="PUNC">=</span><span class="NAME">q.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">>=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="NAME">i2</span><span class="PUNC">--</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>621</span> </span><span class="WHIT">									</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">==</span><span class="NAME">j.id</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>622</span> </span><span class="WHIT">										</span><span class="COMM">//id一致→コールバック</span><span class="WHIT">
+<span class='line'>623</span> </span><span class="WHIT">										</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">qi</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">[</span><span class="NAME">i2</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>624</span> </span><span class="WHIT">										</span><span class="NAME">q.splice</span><span class="PUNC">(</span><span class="NAME">i2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>625</span> </span><span class="WHIT">										</span><span class="COMM">//コールバック必要？</span><span class="WHIT">
+<span class='line'>626</span> </span><span class="WHIT">										</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">qi</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">(</span><span class="NAME">j</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>627</span> </span><span class="WHIT">										</span><span class="KEYW">break</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>628</span> </span><span class="WHIT">									</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>629</span> </span><span class="WHIT">								</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>630</span> </span><span class="WHIT">							</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>631</span> </span><span class="WHIT">							</span><span class="KEYW">continue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>632</span> </span><span class="WHIT">						</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>633</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>634</span> </span><span class="WHIT">					</span><span class="NAME">rx</span><span class="PUNC">+</span><span class="PUNC">=</span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>635</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>636</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>637</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>638</span> </span><span class="WHIT">			</span><span class="NAME">this._q</span><span class="PUNC">=</span><span class="NAME">q</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>639</span> </span><span class="WHIT">			</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="NAME">ws</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>640</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>641</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>642</span> 		 * 接続中のRPCコネクションを閉じます。
+<span class='line'>643</span> 		 * 関数が終了するとonCloseイベントをコールバックします。
+<span class='line'>644</span> 		 * @name MiMicJS.Rpc#close
+<span class='line'>645</span> 		 * @function
+<span class='line'>646</span> 		 */</span><span class="WHIT">
+<span class='line'>647</span> </span><span class="WHIT">		</span><span class="NAME">close</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>648</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>649</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._ws</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this._ws.readyState</span><span class="PUNC">==</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>650</span> </span><span class="WHIT">				</span><span class="NAME">this._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>651</span> </span><span class="WHIT">				</span><span class="NAME">this._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>652</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>653</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>654</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>655</span> 		 * RPC回線を確実に閉じます。
+<span class='line'>656</span> 		 * この関数を実行すると、すべてのコールバックイベントはキャンセルされます。
+<span class='line'>657</span> 		 * @name MiMicJS.Rpc#shutdown
+<span class='line'>658</span> 		 * @function
+<span class='line'>659</span> 		 */</span><span class="WHIT">
+<span class='line'>660</span> </span><span class="WHIT">		</span><span class="NAME">shutdown</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">shutdown</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>661</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>662</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>663</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">_t._ws</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>664</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onopen</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>665</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onmessage</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws.close</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>666</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onclose</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>667</span> </span><span class="WHIT">				</span><span class="NAME">_t._ws.onerror</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">_t._ws</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>668</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>669</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>670</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>671</span> 		 * 非同期でJSON RPCメソッドを送信します。
+<span class='line'>672</span> 		 * @name MiMicJS.Rpc#sendMethod
+<span class='line'>673</span> 		 * @function
+<span class='line'>674</span> 		 * @param {string} i_method
+<span class='line'>675</span> 		 * RPCメソッドの名前です。
+<span class='line'>676</span> 		 * @param {string} i_params
+<span class='line'>677</span> 		 * カンマ区切りのJSONスタイルの文字列です。この文字列は[....]に埋め込まれます。エスケープ文字列は使用できません。
+<span class='line'>678</span> 		 * @param {function(json)}i_callback
+<span class='line'>679</span> 		 * Resultを受け取るコールバック関数です。jsonにはResult JSONをパースしたオブジェクトが入ります。
+<span class='line'>680</span> 		 * @return {int}
+<span class='line'>681</span> 		 * メソッドIDを返します。
+<span class='line'>682</span> 		 */</span><span class="WHIT">
+<span class='line'>683</span> </span><span class="WHIT">		</span><span class="NAME">sendMethod</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">callJsonRpc</span><span class="PUNC">(</span><span class="NAME">i_method</span><span class="PUNC">,</span><span class="NAME">i_params</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>684</span> </span><span class="WHIT">		</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>685</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">v</span><span class="PUNC">=</span><span class="STRN">"{\"jsonrpc\":\"2.0\",\"method\":\""</span><span class="PUNC">+</span><span class="NAME">i_method</span><span class="PUNC">+</span><span class="STRN">"\",\"params\":["</span><span class="PUNC">+</span><span class="NAME">i_params</span><span class="PUNC">+</span><span class="STRN">"],\"id\":"</span><span class="PUNC">+</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="STRN">"}"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>686</span> </span><span class="COMM">//			log(v);//Debug</span><span class="WHIT">
+<span class='line'>687</span> </span><span class="WHIT">			</span><span class="NAME">this._ws.send</span><span class="PUNC">(</span><span class="NAME">v</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>688</span> </span><span class="WHIT">			</span><span class="NAME">this._q.push</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="NAME">this._method_id</span><span class="PUNC">,</span><span class="NAME">i_callback</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="COMM">//キューに記録</span><span class="WHIT">
+<span class='line'>689</span> </span><span class="WHIT">			</span><span class="NAME">this._method_id</span><span class="PUNC">=</span><span class="PUNC">(</span><span class="NAME">this._method_id</span><span class="PUNC">+</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">&</span><span class="NUMB">0x0fffffff</span><span class="PUNC">;</span><span class="COMM">//IDインクリメント</span><span class="WHIT">
+<span class='line'>690</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._method_id</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>691</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>692</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>693</span> 
+<span class='line'>694</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

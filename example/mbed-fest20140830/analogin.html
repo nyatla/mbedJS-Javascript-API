@@ -45,6 +45,9 @@ function main(mcu)
 
 $(document).ready(function(){
 	HOST=mbedJS_IP_ADDR?mbedJS_IP_ADDR:HOST;
+	$("#mbed_top").click(function(){
+		location.href="http://"+HOST+"/";
+	});
 	var mcu = new mbedJS.Mcu(HOST,{
 		onNew : function() {
 			main(mcu);
@@ -68,7 +71,7 @@ $(document).ready(function(){
 </head>
 <body onload="">
       <ul class="nav nav-tabs" role="tablist">
-        <li><a href="http://192.168.128.39/">mbedJS</a></li>
+        <li><a href="#" id="mbed_top">mbedJS</a></li>
         <li><a href="./welcome.html">Welcome</a></li>
         <li><a href="./led1.html">Led1</a></li>
         <li><a href="./analogin.html">AnalogIn</a></li>
