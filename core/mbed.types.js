@@ -17,6 +17,7 @@ var NS=mbedJS;
  * <li> Other mbed Pin Names(LED1-LED4,USBRX,USBTX)
  * <li> Arch Pro Pin Names(D0-D15,A0-A5,I2C_SCL,I2C_SDA)
  * <li> NC
+ * <li> FRDM Pin(PT(A-E)[00-31],LED_[RED|GREEN|BLUE])
  * </ul>
  * @name mbedJS.PinName
  */
@@ -61,6 +62,24 @@ NS.PinName=function(){
 	
 	// Not connected
 	D.NC=0x7FFFFFFF;
+	
+	//FRDM
+	B=0x00050000;
+	var FRDM_PFX='ABCDE';
+	for(var i=0;i<5;i++){
+		for(var i2=0;i2<=31;i2++){
+			D['PT'+FRDM_PFX[i]+i2]=B+i*32+i2;
+		}
+	}
+	B=0x00060000;
+	D.LED_RED	=B+0;
+	D.LED_GREEN	=B+1;
+	D.LED_BLUE	=B+2;
+    //Push buttons
+	B=0x00060000|0x0100;
+	D.SW2=B+2;
+	D.SW3=B+3;
+
 	// メンバの追加
 	return D;
 }();
