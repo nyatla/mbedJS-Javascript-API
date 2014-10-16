@@ -13,7 +13,7 @@ var MI=MiMicJS;
  * @name mbedJS.LM75B
  * @param {mbedJS.I2C|mbedJS.MCU} i_parent
  * インスタンスをバインドするオブジェクトです。MCUの場合はI2Cバスを占有します。
- * @param {addr:int]|[addr:int,sda:PinName,scl:PinName]} i_params
+ * @param {[addr:int]|[addr:int,sda:PinName,scl:PinName]} i_params
  * mbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。
  * @param {HashMap|Generator|function} i_handler
  * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
@@ -80,8 +80,6 @@ var CLASS=function LM75B(i_parent,i_params,i_handler)
 }
 CLASS.prototype=
 {
-	/** @private */
-	RPC_NS:"mbedJS:LM75B",
 	/** @private 最後にコールしたAPIです。*/
 	_lc:null,
 	/** @private Generatorモードの場合にGeneratorオブジェクトを保持します。*/

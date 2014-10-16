@@ -1,0 +1,177 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../release/mbedJS.all.js"></script>
+<script type="text/javascript" src="../MMA7660.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+var I2C_ADDR=0x98;
+var I2C_SDA=mbedJS.PinName.p28;
+var I2C_SCL=mbedJS.PinName.p27;
+/**ASYNCAPIのテスト*/
+function callback_test()
+{
+	log();
+	log("callback_test");
+	var c=0;
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedJS.MMA7660(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],{
+			onNew:function(){
+				log("[PASS]onNew");
+				dev.setActive(false);
+			},
+			onSetActive:function(){
+				log("[PASS]onSetActive");
+				if(c==0){
+					dev.setSampleRate(64);
+				}else{
+					dev.getSide();
+				}
+				c++;
+			},
+			onSetSampleRate:function(){
+				log("[PASS]onSetSampleRate:");
+				dev.setActive(true);
+			},
+			onGetSide:function(r){
+				log("[PASS]onGetSide:"+r);
+				dev.getOrientation();
+			},
+			onGetOrientation:function(r){
+				log("[PASS]onGetOrientation:"+r);
+				dev.readData_int();
+			},
+			onReadData_int:function(r){
+				log("[PASS]onReadData_int:"+r[0]+','+r[1]+','+r[2]);
+				dev.readData();
+			},
+			onReadData:function(r){
+				log("[PASS]onReadData:"+r[0]+','+r[1]+','+r[2]);
+				dev.dispose();
+			},
+			onDispose:function(){
+				log("[PASS]onDispose:");
+				mcu.close();
+			}
+			
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+function callback_hell_test()
+{
+	log();
+	log("callback_hell_test");
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedJS.MMA7660(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],function(){
+				log("[PASS]onNew");
+				dev.setActive(false,function(){
+					log("[PASS]onSetActive");
+					dev.setSampleRate(64,function(){
+						log("[PASS]onSetSampleRate:");
+						dev.setActive(true,function(){
+							log("[PASS]onSetActive");
+							dev.getSide(function(r){
+								log("[PASS]onGetSide:"+r);
+								dev.getOrientation(function(r){
+									log("[PASS]onGetOrientation:"+r);
+									dev.readData_int(function(r){
+										log("[PASS]onReadData_int:"+r[0]+','+r[1]+','+r[2]);
+										dev.readData(function(r){
+											log("[PASS]onReadData:"+r[0]+','+r[1]+','+r[2]);
+											dev.dispose(function(){
+												log("[PASS]onDispose:");
+												mcu.close();
+											});
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+/**
+ * Sync
+ */
+function generator_test()
+{
+	log();
+	var g=function*(){
+	try{
+		var mcu=new mbedJS.Mcu(document.getElementById("addr").value,g);
+		yield mcu.waitForNew();
+		var dev=new mbedJS.MMA7660(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],g);
+		yield dev.waitForNew();
+		log("[PASS]onNew");
+		var v;
+		yield dev.setActive(false);
+		log("[PASS]onSetActive");
+		yield dev.setSampleRate(64);
+		log("[PASS]onSetSampleRate:");
+		yield dev.setActive(true);
+		log("[PASS]onSetActive");
+		v=yield dev.getSide();
+		log("[PASS]onGetSide:"+v);
+		v=yield dev.getOrientation();
+		log("[PASS]onGetOrientation:"+v);
+		v=yield dev.readData_int();
+		log("[PASS]onReadData_int:"+v[0]+','+v[1]+','+v[2]);
+		v=yield dev.readData();
+		log("[PASS]onReadData:"+v[0]+','+v[1]+','+v[2]);
+		yield dev.dispose();
+		log("[PASS]onDispose:");
+		mcu.close();
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}
+
+
+
+</script>
+</head>
+<body>
+<h1>LM75B test</h1>
+<hr/>
+<input type="text" id="addr" value="192.168.128.39"></input>
+<button onclick="callback_test();">callback</button>
+<button onclick="callback_hell_test();">callback_hell</button>
+<button onclick="generator_test();">generator</button><br/>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>

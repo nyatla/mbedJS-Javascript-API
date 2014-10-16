@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../../release/mbedJS.all.js"></script>
+<script type="text/javascript" src="../../../driver/MMA7660.js"></script>
+<script type="text/javascript" src="../mbedAppBoard.types.js"></script>
+<script type="text/javascript" src="../mbedAppBoard.MMA7660.js"></script>
+<script type="text/javascript">
+
+
+
+function log(v)
+{
+	if(v===undefined){
+		document.getElementById("console").value='';
+	}else{
+		document.getElementById("console").value+='['+(new Date())+']'+v+'\n';
+	}
+}
+/**ASYNCAPIのテスト*/
+function callback_test()
+{
+	log();
+	log("callback_test");
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedAppBoard.MMA7660(mcu,{
+			onNew:function(){
+				log("[PASS]onNew");
+				dev.read();
+				dev.read_u16();
+			},
+			onRead:function(v){
+				log("[PASS]onRead:"+v[0]+","+v[1]+","+v[2]);
+//				mcu.close();
+			},
+			onRead_u16:function(v){
+				log("[PASS]onRead_u16:"+v[0]+","+v[1]+","+v[2]);
+				dev.dispose();
+				mcu.close();
+			}	
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+/*
+function callback_hell_test()
+{
+	log();
+	log("callback_hell_test");
+	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
+	{
+		onNew:function(){
+			var dev=new mbedJS.LM75B(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],function(){
+				log("[PASS]onNew");
+				dev.read(function(v1){
+					log("[PASS]onRead:"+v1);
+					dev.dispose(function(v){log("dispose:"+v);mcu.close();})
+				});
+			});
+		},
+		onClose:function(){
+			log("[PASS]onClose");
+		},
+		onError:function(){
+			alert("Error");
+		}
+	});
+}
+
+
+function generator_test()
+{
+	log();
+	var g=function*(){
+	try{
+		var mcu=new mbedJS.Mcu(document.getElementById("addr").value,g);
+		yield mcu.waitForNew();
+		var dev=new mbedJS.LM75B(mcu,[I2C_ADDR,I2C_SDA,I2C_SCL],g);
+		yield dev.waitForNew();
+		log("[PASS]onNew");
+		var v;
+		v=yield dev.read();
+		log("[PASS]onRead:"+v);
+		yield mcu.close();
+	}catch(e){
+		mcu.shutdown();
+		alert(e);
+		throw e;
+	}
+	}();
+	g.next();
+	return;
+
+}*/
+
+
+
+</script>
+</head>
+<body>
+<h1>MMA7660 test</h1>
+<hr/>
+<input type="text" id="addr" value="192.168.128.39"></input>
+<button onclick="callback_test();">callback</button>
+<button onclick="callback_hell_test();">callback_hell</button>
+<button onclick="generator_test();">generator</button><br/>
+<textarea id="console" rows="15" cols="80"></textarea>
+</body>
