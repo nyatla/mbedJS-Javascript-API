@@ -1,0 +1,75 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+function getRequest(){
+    if(location.search.length > 1) {
+        var get = new Object();
+        var ret = location.search.substr(1).split('&');
+        for(var i = 0; i < ret.length; i++) {
+        var r = ret[i].split('=');
+        get[r[0]] = r[1];
+        }
+        return get;
+    } else {
+        return {};
+    }
+}
+var CONTENT_TABLE=[
+	["./mbedApplicationBoard/index.html","mbedApplicationBoard"]
+];
+var _REQUEST=getRequest();
+var _MBEDJS_ADDR=_REQUEST.host?_REQUEST.host:"";
+
+function listItem()
+{
+	var d=CONTENT_TABLE;
+	var s='';
+	for(var i=0;i<d.length;i++){
+		s+='<li><a href="'+d[i][0]+'?mbedjs='+_MBEDJS_ADDR+'">'+d[i][1]+'</a></li>';
+	}
+	return s;
+}
+$(document).ready(function(){
+	$("#list").html(listItem());
+});
+
+
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	#input {
+		margin:64px;
+		font-size:16pt;
+	}
+	#input>input {
+		font-size:24pt;
+	}
+	#footer{
+		margin-top:100px;
+	}
+	#list{
+		font-size:20pt;
+		margin-top:50px;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-left" >mbedJS example</h1>
+		<ul id="list" class="text-left">
+		</ul>
+	<div id="footer" class="text-left" style="clear:both">
+		MiMic project<br/>Copyright (C) 2011-2014 <a href="http://nyatla.jp/">Mimic project@nyatla.jp</a> All Rights Reserved.
+	</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./extlib/three.min.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./lib/mbedAppBoard.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="./extlib/colorpicker/css/colorpicker.css" />
+<script type="text/javascript" src="./extlib/colorpicker/js/colorpicker.js"></script>
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+	//menuタブの準備
+	$("#nav").html(menuTag());
+	var vec=[0,0,0];
+	//UIの初期化
+	var mcu = new mbedJS.Mcu(_MBEDJS_ADDR,{
+		onNew : function() {
+			var mma7660=new mbedAppBoard.MMA7660(mcu,function(){
+				var tid=setInterval(
+					function(){
+						mma7660.read_u16(function(v){
+							vec=v;
+						})
+				},50);
+			    $(window).on('beforeunload', function() {
+					clearInterval(tid);
+					mcu.shutdown();
+			    });				
+			});
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+	
+	var scene = new THREE.Scene();
+	var camera = new THREE.PerspectiveCamera(75, 600 / 400, 1, 1000);
+	camera.position.set(0, 0, 15);
+	if (window.WebGLRenderingContext) {
+	 	renderer = new THREE.WebGLRenderer();
+	} else {
+		renderer = new THREE.CanvasRenderer();
+	}
+	renderer.setSize(320, 200); // Canvasのサイズ設定
+	document.getElementById("canvas").appendChild(renderer.domElement);
+	var directionalLight = new THREE.DirectionalLight('#ffffff', 1);
+	directionalLight.position.set(0, 7, 10);
+	scene.add(directionalLight); // シーンに追加
+
+	var geometry = new THREE.CubeGeometry(10, 10, 10);
+	var material = new THREE.MeshPhongMaterial({color: '#dd3b6f'});
+	cube = new THREE.Mesh(geometry, material);
+	cube.position.set(0, 0, 0);
+	scene.add(cube);
+
+	var ax=ay=az=0;
+	function render() {
+		requestAnimationFrame(render);
+		ax=(ax*4+Math.atan2(vec[0],vec[2]))/5;
+		az=(az*4-Math.atan2(vec[1],vec[2]))/5;
+		ay=0;//Math.atan2(vec[2],vec[0]);
+		$("#val").html(ax+","+ay+","+az+",");
+		console.log(ax);
+		cube.rotation.set(ax,ay,az);
+		renderer.render(scene, camera);
+	}
+	render();	
+	
+	
+	
+	
+});
+
+
+
+
+
+
+
+</script>
+	<style>
+	.sl{
+		font-size:24pt;
+		margin:2px;
+	}
+	#temp{
+		font-size:20pt;
+	}
+	</style>
+</head>
+<body>
+	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
+<div style="margin:50px;">
+	<h1 class="" id="title">MMA7660</h1>
+	<div id="val"></div>
+	<div id="canvas"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./lib/mbedAppBoard.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="./extlib/colorpicker/css/colorpicker.css" />
+<script type="text/javascript" src="./extlib/colorpicker/js/colorpicker.js"></script>
+<script type="text/javascript">
+
+
+
+function setView(v)
+{
+	function setLabel(s,f)
+	{
+		if(f){
+			$(s).css("background-color","blue");
+		}else{
+			$(s).css("background-color","#eeeeee");
+		}
+	}
+	setLabel("#up",v&mbedAppBoard.Joystick.Up);
+	setLabel("#down",v&mbedAppBoard.Joystick.Down);
+	setLabel("#center",v&mbedAppBoard.Joystick.Center);
+	setLabel("#left",v&mbedAppBoard.Joystick.Left);
+	setLabel("#right",v&mbedAppBoard.Joystick.Right);
+}
+
+
+$(document).ready(function(){
+	//menuタブの準備
+	$("#nav").html(menuTag());
+	//UIの初期化
+	setView(0);
+	var mcu = new mbedJS.Mcu(_MBEDJS_ADDR,{
+		onNew : function() {
+			var joystick=new mbedAppBoard.Joystick(mcu,function(){
+				var tid=setInterval(
+					function(){
+						joystick.getState(function(v){
+							setView(v);
+						})
+				},50);
+			    $(window).on('beforeunload', function() {
+					clearInterval(tid);
+					mcu.shutdown();
+			    });
+			});
+
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+});
+</script>
+	<style>
+	.sl{
+		font-size:24pt;
+		margin:2px;
+	}
+	td{
+		height:64px;
+	}
+
+	</style>
+</head>
+<body>
+	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
+<div style="margin:50px;">
+	<h1 class="" id="title">JoyStick</h1>
+	<div class="" style="width:100%;margin:50px;">
+	<table id="joystick" class="text-center">
+	<tr><td></td><td><div id="up" class="sl label label-danger">&nbsp;Up&nbsp;</div></td><td></td></tr>
+	<tr><td><div id="left" class="sl label label-danger">Left</div></td><td><div id="center" class="sl label label-danger">Center</div></td><td><div id="right" class="sl label label-danger">Right</div></td></tr>
+	<tr><td></td><td><div id="down" class="sl label label-danger">Down</div></td><td></td></tr>
+	</table>
+	</div>
+</div>
+</body>
+</html>

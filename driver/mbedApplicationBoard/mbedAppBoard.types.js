@@ -1,4 +1,11 @@
+/**
+ * @fileOverview mbedAppBoardの定数を定義します。
+ */
 (function(){
+	/**
+	 * mbed Application Boardネームスペース
+	 * @namespace
+	 */
 	mbedAppBoard={};
 	/**
 	 * @private

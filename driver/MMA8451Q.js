@@ -122,8 +122,8 @@ CLASS.prototype=
 	_i2c_addr:0,
 	_i2c_attached:false,
 	/**
-	 * Generatorモードのときに使用する関数です。
-	 * Generatorモードの時は、yieldと併用してnew MMA8451Q()の完了を待ちます。
+	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
+	 * yieldと併用してコンストラクタの完了を待ちます。
 	 * @name mbedJS.MMA8451Q#waitForNew
 	 * @function
 	 */
@@ -138,13 +138,17 @@ CLASS.prototype=
 	},
 	/**
 	 * getWhoAmI相当の関数です。
-	 * 関数の完了時にonGetWhoAmIイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonGetWhoAmI,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#getWhoAmI
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{int}
-	 * Generatorモードの時はonGetWhoAmIコールバック引数の値を返します。
-	 */	
+	 * デバイスから取得したid値を返します。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
+	 */		
 	getWhoAmI:function MMA8451Q_getWhoAmI()
 	{
 		try{
@@ -186,25 +190,33 @@ CLASS.prototype=
 	},
 	/**
 	 * getAccX相当の関数です。
-	 * 関数の完了時にonGetAccXイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonGetAccX,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#getAccX
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{float}
-	 * Generatorモードの時はonGetAccXコールバック引数の値を返します。
-	 */	
+	 * デバイスから取得した値を返します。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
+	 */
 	getAccX:function MMA8451Q_getAccX()
 	{	
 		this._getXX(0x01,CLASS.getAccX,MI._getCb(arguments,this._event.onGetAccX));
 	},
 	/**
 	 * getAccY相当の関数です。
-	 * 関数の完了時にonGetAccYイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonGetAccY,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#getAccY
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{float}
-	 * Generatorモードの時はonGetAccYコールバック引数の値を返します。
+	 * デバイスから取得した値を返します。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */
 	getAccY:function MMA8451Q_getAccY()
 	{
@@ -212,12 +224,16 @@ CLASS.prototype=
 	},
 	/**
 	 * getAccZ相当の関数です。
-	 * 関数の完了時にonGetAccZイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonGetAccZ,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#getAccZ
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{float}
-	 * Generatorモードの時はonGetAccZコールバック引数の値を返します。
+	 * デバイスから取得した値を返します。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */
 	getAccZ:function MMA8451Q_getAccZ()
 	{
@@ -225,12 +241,16 @@ CLASS.prototype=
 	},
 	/**
 	 * getAccAllAxis相当の関数です。
-	 * 関数の完了時にonGetAccAllAxisイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonGetAccAllAxis,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#getAccAllAxis
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{HashMap}
-	 * Generatorモードの時はonGetAccAllAxisコールバックの引数の値を返します。
+	 * デバイスから取得した値を{x:float,y:float,z:float}で返します。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */
 	getAccAllAxis:function MMA8451Q_getAccAllAxis()
 	{
@@ -253,9 +273,14 @@ CLASS.prototype=
 
 	},
 	/**
-	 * MCUに生成されているオブジェクトを破棄します。
+	 * インスタンスの確保しているオブジェクトを破棄します。
+	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA8451Q#dispose
 	 * @function
+	 * @param {function()} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 */
 	dispose:function MMA8451Q_dispose()
 	{

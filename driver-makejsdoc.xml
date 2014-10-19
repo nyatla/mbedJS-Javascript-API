@@ -11,8 +11,16 @@
 	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
 	          classpath="${JSDKANT}\jsdoc-toolkit-ant-task-1.1.2.jar;${JSDK}\java\classes\js.jar" />
 	<jsdoctoolkit jsdochome="${JSDK}\" outputdir="${DEST_ROOT}" template="mimic">
-		<source file="${SRC_ROOT}\MMA8451Q.js" />
+		<source file="${SRC_ROOT}\MMA7660.js" />
 		<source file="${SRC_ROOT}\LM75B.js" />
+		<source file="${SRC_ROOT}\MMA8451Q.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.types.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.Speaker.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.Joystick.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.LM75B.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.MMA7660.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.Port.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.RgbLed.js" />		
 	</jsdoctoolkit>
     </target>
 </project>

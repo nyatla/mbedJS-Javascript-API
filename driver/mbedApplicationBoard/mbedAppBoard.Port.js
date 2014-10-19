@@ -1,26 +1,33 @@
+/**
+ * @fileOverview mbedApplicationBoardのPortドライバです。
+ */
 (function(){
 var MI=MiMicJS;
+
 /**
  * MbedApplicationBoardのPortを制御するクラスです。
  * @constructor
  * @name mbedAppBoard.Port
  * @param {mbedJS.MCU} i_mcu
  * インスタンスをバインドするオブジェクトです。
- * @param {i_ch:int} i_params
- * Portのチャンネルを指定します。
+ * @param {int} i_ch
+ * Portのチャンネルを指定します。1,2を指定できます。
  * @param {HashMap|Generator|function} i_handler
  * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * {HashMap} 非同期イベントの共通イベントハンドラです。関数の引数retは各関数の戻り値です。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。関数の引数returnは各関数の戻り値です。
  * <ul>
  * <li>onNew:function() - コンストラクタが完了し、インスタンスが使用可能になった時に呼び出されます。</li>
  * <li>onDispose:function() - disposeの完了時に呼び出されます。</li>
- * <li>onRead_u16() - read_u16の完了時に呼び出されます。</li>
- * <li>onRead(ret) -readの完了時に呼び出されます。</li>
+ * <li>onRead(return) -readの完了時に呼び出されます。</li>
+ * <li>onRead_u16(return) -read_u16の完了時に呼び出されます。</li>
  * </ul>
+ * </p>
  * <p>
- * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
- * メンバ関数のイベントハンドラは個別に設定してください。
+ * {function} 関数の完了を受け取るコールバック関数です。onNew相当のコールバック関数が呼び出されます。
+ * </p>
+ * <p>
+ * {Generator} yieldコールを行う場合にGeneratorを指定します。
  * </p>
  * @example //Callback
  * @example //Generator
@@ -57,10 +64,11 @@ CLASS.prototype=
 	_gen:null,
 	/** @private コールバック関数の連想配列です。要素はコンストラクタを参照してください。*/
 	_event:{},
+	/** @private*/
 	_ain:null,
 	/**
-	 * Generatorモードのときに使用する関数です。
-	 * Generatorモードの時は、yieldと併用してnew  Joystick()の完了を待ちます。
+	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
+	 * yieldと併用してコンストラクタの完了を待ちます。
 	 * @name mbedAppBoard.Port#waitForNew
 	 * @function
 	 */
@@ -74,15 +82,16 @@ CLASS.prototype=
 		}
 	},
 	/**
-	 * 指定chのポートの値を返します。
-	 * 関数の完了時にonRead,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 加速度センサから値を取得します。
+	 * 関数の完了時にonRead_u16,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedAppBoard.Port#read_u16
 	 * @function
-	 * @param　{int} i_ch
-	 * 1又は2を指定します。
-	 * @return
-	 * ポートのint値
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 * @return {int}
+	 * センサから取得した値の配列です。16bit unsigned int値です。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */	
 	read_u16:function Port_read_u16()
@@ -102,15 +111,16 @@ CLASS.prototype=
 		}
 	},
 	/**
-	 * 指定chのポートの値を返します。
+	 * 加速度センサから値を取得します。
 	 * 関数の完了時にonRead,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedAppBoard.Port#read
 	 * @function
-	 * @param　{int} i_ch
-	 * 1又は2を指定します。
-	 * @return
-	 * ポートのint値
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 * @return {float}
+	 * センサから取得した値の配列です。0<=n<=1の値です。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */	
 	read:function Port_read()
@@ -129,7 +139,17 @@ CLASS.prototype=
 			throw new MI.MiMicException(e);
 		}
 	},
-	dispose:function()
+	/**
+	 * インスタンスの確保しているオブジェクトを破棄します。
+	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
+	 * @name mbedAppBoard.Port#dispose
+	 * @function
+	 * @param {function()} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 */		
+	dispose:function Port_dispose()
 	{
 		try{
 			var _t=this;

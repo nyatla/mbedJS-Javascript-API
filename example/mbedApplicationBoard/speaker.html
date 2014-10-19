@@ -1,0 +1,96 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./lib/mbedAppBoard.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="./extlib/colorpicker/css/colorpicker.css" />
+<script type="text/javascript" src="./extlib/colorpicker/js/colorpicker.js"></script>
+<script type="text/javascript">
+
+
+
+function main(speaker)
+{
+	$("#b1").mousedown(function(){
+		speaker.sound(261);
+	});
+	$("#b2").mousedown(function(){
+		speaker.sound(293);
+	});
+	$("#b3").mousedown(function(){
+		speaker.sound(329);
+	});
+	$("#b4").mousedown(function(){
+		speaker.sound(349);
+	});
+	$("#b5").mousedown(function(){
+		speaker.sound(391);
+	});
+	$("#b6").mousedown(function(){
+		speaker.sound(440);
+	});
+	$("#b7").mousedown(function(){
+		speaker.sound(493);
+	});
+	$("#b8").mousedown(function(){
+		speaker.sound(523);
+	});
+	$("#b1,#b2,#b3,#b4,#b5,#b6,#b7,#b8").mouseup(function(){
+		speaker.sound(0);
+	});
+}
+
+
+$(document).ready(function(){
+	//menuタブの準備
+	$("#nav").html(menuTag());
+	//UIの初期化
+	var mcu = new mbedJS.Mcu(_MBEDJS_ADDR,{
+		onNew : function() {
+			var speaker=new mbedAppBoard.Speaker(mcu,function(){
+				main(speaker);
+			});
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});
+    $(window).on('beforeunload', function() {
+		mcu.shutdown();
+    });	
+});
+</script>
+	<style>
+	.sl{
+		font-size:24pt;
+		margin:2px;
+	}
+	td{
+		height:64px;
+	}
+
+	</style>
+</head>
+<body>
+	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
+<div style="margin:50px;">
+	<h1 class="" id="title">Speaker</h1>
+	<div class="" style="width:100%;margin:50px;">
+	<button id="b1" type="button" class="btn btn-primary">C</button>
+	<button id="b2" type="button" class="btn btn-primary">D</button>
+	<button id="b3" type="button" class="btn btn-primary">E</button>
+	<button id="b4" type="button" class="btn btn-primary">F</button>
+	<button id="b5" type="button" class="btn btn-primary">G</button>
+	<button id="b6" type="button" class="btn btn-primary">A</button>
+	<button id="b7" type="button" class="btn btn-primary">B</button>
+	<button id="b8" type="button" class="btn btn-primary">C</button>
+	</div>
+</div>
+</body>
+</html>

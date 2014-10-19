@@ -221,7 +221,23 @@ function googleTranslateElementInit() {
 	
 	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
 	
+	<li><a href="../symbols/mbedAppBoard.html">mbedAppBoard</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.Joystick.html">mbedAppBoard.Joystick</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.LM75B.html">mbedAppBoard.LM75B</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.MMA7660.html">mbedAppBoard.MMA7660</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.Port.html">mbedAppBoard.Port</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.RgbLed.html">mbedAppBoard.RgbLed</a></li>
+	
+	<li><a href="../symbols/mbedAppBoard.Speaker.html">mbedAppBoard.Speaker</a></li>
+	
 	<li><a href="../symbols/mbedJS.LM75B.html">mbedJS.LM75B</a></li>
+	
+	<li><a href="../symbols/mbedJS.MMA7660.html">mbedJS.MMA7660</a></li>
 	
 	<li><a href="../symbols/mbedJS.MMA8451Q.html">mbedJS.MMA8451Q</a></li>
 	
@@ -293,18 +309,18 @@ function googleTranslateElementInit() {
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/mbedJS.LM75B.html#dispose">dispose</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/mbedJS.LM75B.html#dispose">dispose</a></b>(i_callback)
 								</div>
-								<div class="description">MCUに生成されているオブジェクトを破棄します。</div>
+								<div class="description">インスタンスの確保しているオブジェクトを破棄します。関数の完了時にonDispose,又はコールバック関数でイベントを通知します。コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/mbedJS.LM75B.html#read">read</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/mbedJS.LM75B.html#read">read</a></b>(i_callback)
 								</div>
-								<div class="description">read相当の関数です。関数の完了時にonReadイベントが発生します。Generatorモードの時は、yieldと併用して完了を待機できます。</div>
+								<div class="description">センサから摂氏温度値を取得します。関数の完了時にonRead,又はコールバック関数でイベントを通知します。コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。</div>
 							</td>
 						</tr>
 					
@@ -313,7 +329,7 @@ function googleTranslateElementInit() {
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/mbedJS.LM75B.html#waitForNew">waitForNew</a></b>()
 								</div>
-								<div class="description">Generatorモードのときに使用する関数です。Generatorモードの時は、yieldと併用してnew LM75B()の完了を待ちます。</div>
+								<div class="description">コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。yieldと併用してコンストラクタの完了を待ちます。</div>
 							</td>
 						</tr>
 					
@@ -364,16 +380,16 @@ function googleTranslateElementInit() {
 								<dd>インスタンスをバインドするオブジェクトです。MCUの場合はI2Cバスを占有します。</dd>
 						
 							<dt>
-								<span class="light fixedFont">{addr:int]|[addr:int|sda:PinName|scl:PinName]}</span>  <b>i_params</b>
+								<span class="light fixedFont">{[addr:int]|[addr:int|sda:PinName|scl:PinName]}</span>  <b>i_params</b>
 								
 							</dt>
-								<dd>mbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。</dd>
+								<dd>i_parentがmbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。</dd>
 						
 							<dt>
 								<span class="light fixedFont">{HashMap|Generator|function}</span>  <b>i_handler</b>
 								
 							</dt>
-								<dd>非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。<p>{HashMap} 非同期イベントの共通イベントハンドラです。<ul><li>onNew:function() -インスタンスが使用可能になった時に呼び出されます。</li><li>onRead:function(v) -getRead関数のコールバック関数です。	<ul>		<li>v:float - 戻り値です。</li>	</ul></li></ul><p>{Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。</p><p>{function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。メンバ関数のイベントハンドラは個別に設定してください。</p></dd>
+								<dd>非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。<p>{HashMap} 非同期イベントの共通イベントハンドラです。関数の引数returnは各関数の戻り値です。<ul><li>onNew:function() - コンストラクタが完了し、インスタンスが使用可能になった時に呼び出されます。</li><li>onDispose:function() - disposeの完了時に呼び出されます。</li><li>onRead(return) - readの完了時に呼び出されます。</li></ul></p><p>{function} 関数の完了を受け取るコールバック関数です。onNew相当のコールバック関数が呼び出されます。</p><p>{Generator} yieldコールを行う場合にGeneratorを指定します。</p></dd>
 						
 						</dl>
 					
@@ -384,7 +400,7 @@ function googleTranslateElementInit() {
 						<dl class="detailList">
 						<dt class="heading">Returns:</dt>
 						
-								<dd><span class="light fixedFont">{<a href="../symbols/mbedJS.LM75B.html">mbedJS.LM75B</a>}</span> </dd>
+								<dd><span class="light fixedFont">{<a href="../symbols/mbedJS.LM75B.html">mbedJS.LM75B</a>}</span> 生成したインスタンスを返します。</dd>
 						
 						</dl>
 					
@@ -407,17 +423,28 @@ function googleTranslateElementInit() {
 					<div class="fixedFont">
 					
 					
-					<b>dispose</b>()
+					<b>dispose</b>(i_callback)
 					
 					</div>
 					<div class="description">
-						MCUに生成されているオブジェクトを破棄します。
+						インスタンスの確保しているオブジェクトを破棄します。関数の完了時にonDispose,又はコールバック関数でイベントを通知します。コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{function()}</span> <b>i_callback</b>
+									
+								</dt>
+								<dd>省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。</dd>
+							
+							</dl>
 						
 						
 						
@@ -431,18 +458,29 @@ function googleTranslateElementInit() {
 					<a name="read"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{int}</span>
-					<b>read</b>()
+					<span class="light">{float}</span>
+					<b>read</b>(i_callback)
 					
 					</div>
 					<div class="description">
-						read相当の関数です。関数の完了時にonReadイベントが発生します。Generatorモードの時は、yieldと併用して完了を待機できます。
+						センサから摂氏温度値を取得します。関数の完了時にonRead,又はコールバック関数でイベントを通知します。コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{function(return)}</span> <b>i_callback</b>
+									
+								</dt>
+								<dd>省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。</dd>
+							
+							</dl>
 						
 						
 						
@@ -451,7 +489,7 @@ function googleTranslateElementInit() {
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{int}</span> Generatorモードの時はonReadコールバック引数の値を返します。</dd>
+								<dd><span class="light fixedFont">{float}</span> センサから取得した値です。戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。</dd>
 							
 							</dl>
 						
@@ -468,7 +506,7 @@ function googleTranslateElementInit() {
 					
 					</div>
 					<div class="description">
-						Generatorモードのときに使用する関数です。Generatorモードの時は、yieldと併用してnew LM75B()の完了を待ちます。
+						コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。yieldと併用してコンストラクタの完了を待ちます。
 						
 						
 					</div>
@@ -497,7 +535,7 @@ function googleTranslateElementInit() {
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Tue Aug 19 2014 16:02:00 GMT+0900 (JST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sun Oct 19 2014 14:07:39 GMT+0900 (JST)
 		</div>
 	</body>
 </html>

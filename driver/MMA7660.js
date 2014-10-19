@@ -16,7 +16,7 @@ function int6toint32(v)
 }
 /**
  * MMA7660を制御するクラスです。
- * <a href="https://mbed.org/users/emilmont/code/MMA8451Q/">mbed::MMA7660</a>と同等の機能を持ちます。
+ * <a href="https://mbed.org/components/MMA7660/">mbed::MMA7660</a>と同等の機能を持ちます。
  * @constructor
  * @name mbedJS.MMA7660
  * @param {mbedJS.I2C|mbedJS.MCU} i_parent
@@ -91,10 +91,50 @@ var MMA7660_TILT_R =0x03;
 var MMA7660_INT_R =0x06;
 var MMA7660_MODE_R =0x07;
 var MMA7660_SR_R =0x08;
-CLASS.Unknown	=0;
-CLASS.Left		=1;
+
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Up
+ * @field
+ */
+CLASS.Up	=0;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Down
+ * @field
+ */
+CLASS.Down		=1;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Right
+ * @field
+ */
 CLASS.Right		=2;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Left
+ * @field
+ */
 CLASS.Left		=3;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Back
+ * @field
+ */
+CLASS.Back		=4;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Front
+ * @field
+ */
+CLASS.Front		=5;
+/**
+ * 関数の返す定数値です。
+ * @name mbedJS.MMA7660#Unknown
+ * @field
+ */
+CLASS.Unknown	=6;
+
 CLASS.prototype=
 {
 	/** @private 最後にコールしたAPIです。*/
@@ -108,8 +148,8 @@ CLASS.prototype=
 	_i2c_attached:false,
 	_active:false,
 	/**
-	 * Generatorモードのときに使用する関数です。
-	 * Generatorモードの時は、yieldと併用してnew MMA7660()の完了を待ちます。
+	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
+	 * yieldと併用してコンストラクタの完了を待ちます。
 	 * @name mbedJS.MMA7660#waitForNew
 	 * @function
 	 */
@@ -204,10 +244,14 @@ CLASS.prototype=
 	/**
 	 * setSampleRate相当の関数です。
 	 * 関数の完了時にonSetSampleRate,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#setSampleRate
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @param {int} i_samplerate
+	 * サンプルレート(hz)を指定します。120,64,32,16,8,4,2,1の何れかの値が有効です。
 	 */	
 	setSampleRate:function MMA7660_setSampleRate(i_samplerate)
 	{
@@ -247,10 +291,14 @@ CLASS.prototype=
 	/**
 	 * setActive相当の関数です。
 	 * 関数の完了時にonSetActive,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#setActive
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @param {bool} is_active
+	 * センサの状態を設定します。
 	 */
 	setActive:function MMA7660_setActive(is_active)
 	{
@@ -268,17 +316,19 @@ CLASS.prototype=
 			throw new MI.MiMicException(e);
 		}			
 	},
-	
 	/**
 	 * getSide相当の関数です。
 	 * 関数の完了時にonGetSide,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#getSide
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{int}
-	 * mbedJS.MMA7660#Left,Right,Unknownの何れかを返します。
+	 * mbedJS.MMA7660#Front,Back,Unknownの何れかを返します。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
-	 */
+	 */		
 	getSide:function MMA7660_getSide()
 	{
 		try{
@@ -290,8 +340,8 @@ CLASS.prototype=
 				var tiltreg=r[0]&0x03;
 				var ret=CLASS.Unknown;
 				switch(tiltreg){
-				case 0x01:ret=CLASS.Left;break;
-				case 0x02:ret=CLASS.Right;break;
+				case 0x01:ret=CLASS.Front;break;
+				case 0x02:ret=CLASS.Back;break;
 				}
 				if(cb){cb(ret);}
 				if(_t._gen){_t._gen.next(ret);}
@@ -304,9 +354,12 @@ CLASS.prototype=
 	/**
 	 * getOrientation相当の関数です。
 	 * 関数の完了時にonGetOrientation,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#getOrientation
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{int}
 	 * mbedJS.MMA7660#Left,Right,Top,Bottom,Unknownの何れかを返します。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
@@ -338,9 +391,12 @@ CLASS.prototype=
 	/**
 	 * readData_int相当の関数です。
 	 * 関数の完了時にonReadData_int,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#onReadData_int
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{int[]}
 	 * センサの出力値を要素数3の配列で返します。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
@@ -364,9 +420,12 @@ CLASS.prototype=
 	/**
 	 * readData相当の関数です。
 	 * 関数の完了時にonReadData,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#readData
 	 * @function
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 * @return　{float[]}
 	 * センサの出力値を要素数3の配列で返します。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
@@ -387,11 +446,16 @@ CLASS.prototype=
 		}catch(e){
 			throw new MI.MiMicException(e);
 		}		
-	},	
+	},
 	/**
-	 * MCUに生成されているオブジェクトを破棄します。
+	 * インスタンスの確保しているオブジェクトを破棄します。
+	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.MMA7660#dispose
 	 * @function
+	 * @param {function()} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 */
 	dispose:function MMA7660_dispose()
 	{

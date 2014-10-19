@@ -1,6 +1,35 @@
+/**
+ * @fileOverview mbedApplicationBoardのRgbLEDドライバです。
+ */
 (function(){
 var MI=MiMicJS;
-
+/**
+ * MbedApplicationBoardのRgbLEDを制御するクラスです。
+ * @constructor
+ * @name mbedAppBoard.RgbLed
+ * @param {mbedJS.MCU} i_mcu
+ * インスタンスをバインドするオブジェクトです。
+ * @param {HashMap|Generator|function} i_handler
+ * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
+ * <p>
+ * {HashMap} 非同期イベントの共通イベントハンドラです。関数の引数returnは各関数の戻り値です。
+ * <ul>
+ * <li>onNew:function() - コンストラクタが完了し、インスタンスが使用可能になった時に呼び出されます。</li>
+ * <li>onDispose:function() - disposeの完了時に呼び出されます。</li>
+ * <li>onSetColor() - setColorの完了時に呼び出されます。</li>
+ * <li>onSetRgb() - setRgbの完了時に呼び出されます。</li>
+ * </ul>
+ * </p>
+ * <p>
+ * {function} 関数の完了を受け取るコールバック関数です。onNew相当のコールバック関数が呼び出されます。
+ * </p>
+ * <p>
+ * {Generator} yieldコールを行う場合にGeneratorを指定します。
+ * </p>
+ * @example //Callback
+ * @example //Generator
+ * @example //Callback hell
+ */
 var CLASS=function RgbLed(i_mcu,i_handler)
 {
 	try{
@@ -35,13 +64,16 @@ CLASS.prototype=
 	_gen:null,
 	/** @private コールバック関数の連想配列です。要素はコンストラクタを参照してください。*/
 	_event:{},
+	/** @private */
 	_pwm_r:null,
+	/** @private */
 	_pwm_g:null,
+	/** @private */
 	_pwm_b:null,
 	/**
-	 * Generatorモードのときに使用する関数です。
-	 * Generatorモードの時は、yieldと併用してnew RgbLed()の完了を待ちます。
-	 * @name mbedJS.RgbLed#waitForNew
+	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
+	 * yieldと併用してコンストラクタの完了を待ちます。
+	 * @name mbedAppBoard.RgbLed#waitForNew
 	 * @function
 	 */
 	waitForNew:function RgbLed_waitForNew()
@@ -74,11 +106,11 @@ CLASS.prototype=
 		}catch(e){
 			throw new MI.MiMicException(e);
 		}
-	},	
+	},
 	/**
 	 * RgbLedの輝度をセットします。
-	 * 関数の完了時にonRgb,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonSetColor,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedAppBoard.RgbLed#setColor
 	 * @function
 	 * @param {float} i_r
@@ -87,6 +119,9 @@ CLASS.prototype=
 	 * 0<=n<=1.0の値
 	 * @param {float} i_b
 	 * 0<=n<=1.0の値
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 */	
 	setColor:function RgbLed_setColor(i_r,i_g,i_b)
 	{
@@ -94,8 +129,8 @@ CLASS.prototype=
 	},
 	/**
 	 * RgbLedの輝度をセットします。
-	 * 関数の完了時にonRgb,又はコールバック関数でイベントを通知します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * 関数の完了時にonSetRgb,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedAppBoard.RgbLed#setRgb
 	 * @function
 	 * @param {int} i_r
@@ -104,11 +139,24 @@ CLASS.prototype=
 	 * 0<=n<=255の値
 	 * @param {int} i_b
 	 * 0<=n<=255の値
-	 */		
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 */
 	setRgb:function RgbLed_setRgb(i_r,i_g,i_b)
 	{
 		return this._setRgb(i_r,i_g,i_b,CLASS.setRgb,MI._getCb(arguments,this._event.onSetRgb));
 	},
+	/**
+	 * インスタンスの確保しているオブジェクトを破棄します。
+	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
+	 * @name mbedAppBoard.RgbLed#dispose
+	 * @function
+	 * @param {function()} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 */	
 	dispose:function()
 	{
 		try{

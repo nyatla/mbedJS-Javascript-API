@@ -5,7 +5,6 @@
 var NS=mbedJS;
 var MI=MiMicJS;
 
-
 /**
  * LM75Bを制御するクラスです。
  * <a href="https://github.com/hara41/test_LM75B/tree/master/test_LM75B">test_LM75B</a>と同等の機能を持ちます。
@@ -14,30 +13,25 @@ var MI=MiMicJS;
  * @param {mbedJS.I2C|mbedJS.MCU} i_parent
  * インスタンスをバインドするオブジェクトです。MCUの場合はI2Cバスを占有します。
  * @param {[addr:int]|[addr:int,sda:PinName,scl:PinName]} i_params
- * mbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。
+ * i_parentがmbedJS.I2Cの場合はI2Cアドレスを指定します。mbedJS.MCUの場合はI2C address,sda,sclの順番で指定します。
  * @param {HashMap|Generator|function} i_handler
  * 非同期イベントの共通ハンドラの連想配列,Generator,個別コールバック関数の何れかを指定します。
  * <p>
- * {HashMap} 非同期イベントの共通イベントハンドラです。
+ * {HashMap} 非同期イベントの共通イベントハンドラです。関数の引数returnは各関数の戻り値です。
  * <ul>
- * <li>onNew:function() -
- * インスタンスが使用可能になった時に呼び出されます。
- * </li>
- * <li>onRead:function(v) -
- * getRead関数のコールバック関数です。
- * 	<ul>
- * 		<li>v:float - 戻り値です。</li>
- * 	</ul>
- * </li>
+ * <li>onNew:function() - コンストラクタが完了し、インスタンスが使用可能になった時に呼び出されます。</li>
+ * <li>onDispose:function() - disposeの完了時に呼び出されます。</li>
+ * <li>onRead(return) - readの完了時に呼び出されます。</li>
  * </ul>
- * <p>
- * {Generator} Generatorを指定した場合、コールバック関数の引数はyiledの戻り値として取得できます。
  * </p>
  * <p>
- * {function} コールバック関数を指定した場合、RPCが完了したときにonNew相当のコールバック関数が呼び出されます。
- * メンバ関数のイベントハンドラは個別に設定してください。
+ * {function} 関数の完了を受け取るコールバック関数です。onNew相当のコールバック関数が呼び出されます。
+ * </p>
+ * <p>
+ * {Generator} yieldコールを行う場合にGeneratorを指定します。
  * </p>
  * @return {mbedJS.LM75B}
+ * 生成したインスタンスを返します。
  * @example //Callback
  * @example //Generator
  * @example //Callback hell
@@ -86,12 +80,15 @@ CLASS.prototype=
 	_gen:null,
 	/** @private コールバック関数の連想配列です。要素はコンストラクタを参照してください。*/
 	_event:{},
+	/** @private*/
 	_i2c:null,
+	/** @private*/
 	_i2c_addr:0,
+	/** @private*/
 	_i2c_attached:false,
 	/**
-	 * Generatorモードのときに使用する関数です。
-	 * Generatorモードの時は、yieldと併用してnew LM75B()の完了を待ちます。
+	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
+	 * yieldと併用してコンストラクタの完了を待ちます。
 	 * @name mbedJS.LM75B#waitForNew
 	 * @function
 	 */
@@ -105,13 +102,17 @@ CLASS.prototype=
 		}
 	},
 	/**
-	 * read相当の関数です。
-	 * 関数の完了時にonReadイベントが発生します。
-	 * Generatorモードの時は、yieldと併用して完了を待機できます。
+	 * センサから摂氏温度値を取得します。
+	 * 関数の完了時にonRead,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.LM75B#read
 	 * @function
-	 * @return　{int}
-	 * Generatorモードの時はonReadコールバック引数の値を返します。
+	 * @param {function(return)} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時はコンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 * @return {float}
+	 * センサから取得した値です。
+	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */	
 	read:function LM75B_read()
 	{
@@ -133,10 +134,15 @@ CLASS.prototype=
 		}
 	},
 	/**
-	 * MCUに生成されているオブジェクトを破棄します。
+	 * インスタンスの確保しているオブジェクトを破棄します。
+	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
+	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
 	 * @name mbedJS.LM75B#dispose
 	 * @function
-	 */
+	 * @param {function()} i_callback
+	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
+	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
+	 */	
 	dispose:function LM75B_dispose()
 	{
 		try{

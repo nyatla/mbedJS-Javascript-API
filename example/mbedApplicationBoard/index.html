@@ -1,0 +1,72 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="./extlib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./extlib/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="./extlib/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./config.js"></script>
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+	$("#addr").val(_MBEDJS_ADDR);
+	$("#nav").html(menuTag());
+	$("#list").html(contentList());
+
+	function updateLink(addr)
+	{
+		_MBEDJS_ADDR=addr;
+		$("#nav").html(menuTag());
+		$("#list").html(contentList());
+	}
+	var last_addr=_MBEDJS_ADDR;
+	setInterval(function(){
+		var t=$("#addr").val();
+		if(last_addr!=t){
+			updateLink(t);
+			last_addr=t;
+		}
+	},300);
+	
+});
+
+
+</script>
+	<style>
+	.header{
+		text-align:center;
+	}
+	#input {
+		margin:64px;
+		font-size:16pt;
+	}
+	#input>input {
+		font-size:24pt;
+	}
+	</style>
+</head>
+<body>
+	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
+	<div class="container">
+		<h1 class="text-center" >mbed Application Board</h1>
+		<div id="input" class="text-center">
+			<img src="mbed_app_board.png"/>
+			<div>mbedJS IP Address</div>
+			<input id="addr" class="text-center" ></input>
+			
+		</div>
+		<div id="input" class="text-center">
+		<div>
+		<ul id="list"class="text-left"></ul>
+		</div>
+		</div>
+	<div class="text-center" style="clear:both">
+		MiMic project<br/>Copyright (C) 2011-2014 <a href="http://nyatla.jp/">Mimic project@nyatla.jp</a> All Rights Reserved.
+	</div>
+	</div>
+</body>
+</html>
