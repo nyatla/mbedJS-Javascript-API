@@ -19,7 +19,7 @@
 		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.Joystick.js" />
 		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.LM75B.js" />
 		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.MMA7660.js" />
-		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.Port.js" />
+		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.PotentioMeter.js" />
 		<source file="${SRC_ROOT}\mbedApplicationBoard\mbedAppBoard.RgbLed.js" />		
 	</jsdoctoolkit>
     </target>

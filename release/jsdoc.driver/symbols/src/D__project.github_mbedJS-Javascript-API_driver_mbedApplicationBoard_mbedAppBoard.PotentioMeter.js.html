@@ -6,15 +6,15 @@
 	.REGX {color: #339;}
 	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
 	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
-<span class='line'>  2</span>  * @fileOverview mbedApplicationBoardのPortドライバです。
+<span class='line'>  2</span>  * @fileOverview mbedApplicationBoardのPotentioMeterドライバです。
 <span class='line'>  3</span>  */</span><span class="WHIT">
 <span class='line'>  4</span> </span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>  5</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">MI</span><span class="PUNC">=</span><span class="NAME">MiMicJS</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  6</span> 
 <span class='line'>  7</span> </span><span class="COMM">/**
-<span class='line'>  8</span>  * MbedApplicationBoardのPortを制御するクラスです。
+<span class='line'>  8</span>  * MbedApplicationBoardのPotentioMeterを制御するクラスです。
 <span class='line'>  9</span>  * @constructor
-<span class='line'> 10</span>  * @name mbedAppBoard.Port
+<span class='line'> 10</span>  * @name mbedAppBoard.PotentioMeter
 <span class='line'> 11</span>  * @param {mbedJS.MCU} i_mcu
 <span class='line'> 12</span>  * インスタンスをバインドするオブジェクトです。
 <span class='line'> 13</span>  * @param {int} i_ch
@@ -40,7 +40,7 @@
 <span class='line'> 33</span>  * @example //Generator
 <span class='line'> 34</span>  * @example //Callback hell
 <span class='line'> 35</span>  */</span><span class="WHIT">
-<span class='line'> 36</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">CLASS</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Port</span><span class="PUNC">(</span><span class="NAME">i_mcu</span><span class="PUNC">,</span><span class="NAME">i_ch</span><span class="PUNC">,</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">CLASS</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">PotentioMeter</span><span class="PUNC">(</span><span class="NAME">i_mcu</span><span class="PUNC">,</span><span class="NAME">i_ch</span><span class="PUNC">,</span><span class="NAME">i_handler</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 37</span> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 38</span> </span><span class="WHIT">	</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 39</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
@@ -76,10 +76,10 @@
 <span class='line'> 69</span> </span><span class="WHIT">	</span><span class="COMM">/**
 <span class='line'> 70</span> 	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
 <span class='line'> 71</span> 	 * yieldと併用してコンストラクタの完了を待ちます。
-<span class='line'> 72</span> 	 * @name mbedAppBoard.Port#waitForNew
+<span class='line'> 72</span> 	 * @name mbedAppBoard.PotentioMeter#waitForNew
 <span class='line'> 73</span> 	 * @function
 <span class='line'> 74</span> 	 */</span><span class="WHIT">
-<span class='line'> 75</span> </span><span class="WHIT">	</span><span class="NAME">waitForNew</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Port_waitForNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">	</span><span class="NAME">waitForNew</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">PotentioMeter_waitForNew</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 76</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 77</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 78</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this._lc</span><span class="PUNC">!=</span><span class="NAME">CLASS</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">MI.MiMicException</span><span class="PUNC">(</span><span class="NAME">MI.Error.NG_ILLEGAL_CALL</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
@@ -92,7 +92,7 @@
 <span class='line'> 85</span> 	 * 加速度センサから値を取得します。
 <span class='line'> 86</span> 	 * 関数の完了時にonRead_u16,又はコールバック関数でイベントを通知します。
 <span class='line'> 87</span> 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-<span class='line'> 88</span> 	 * @name mbedAppBoard.Port#read_u16
+<span class='line'> 88</span> 	 * @name mbedAppBoard.PotentioMeter#read_u16
 <span class='line'> 89</span> 	 * @function
 <span class='line'> 90</span> 	 * @param {function(return)} i_callback
 <span class='line'> 91</span> 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
@@ -101,7 +101,7 @@
 <span class='line'> 94</span> 	 * センサから取得した値の配列です。16bit unsigned int値です。
 <span class='line'> 95</span> 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 <span class='line'> 96</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'> 97</span> </span><span class="WHIT">	</span><span class="NAME">read_u16</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Port_read_u16</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">	</span><span class="NAME">read_u16</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">PotentioMeter_read_u16</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 98</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 99</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>100</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
@@ -121,7 +121,7 @@
 <span class='line'>114</span> 	 * 加速度センサから値を取得します。
 <span class='line'>115</span> 	 * 関数の完了時にonRead,又はコールバック関数でイベントを通知します。
 <span class='line'>116</span> 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-<span class='line'>117</span> 	 * @name mbedAppBoard.Port#read
+<span class='line'>117</span> 	 * @name mbedAppBoard.PotentioMeter#read
 <span class='line'>118</span> 	 * @function
 <span class='line'>119</span> 	 * @param {function(return)} i_callback
 <span class='line'>120</span> 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
@@ -130,7 +130,7 @@
 <span class='line'>123</span> 	 * センサから取得した値の配列です。0&lt;=n&lt;=1の値です。
 <span class='line'>124</span> 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 <span class='line'>125</span> 	 */</span><span class="WHIT">	</span><span class="WHIT">
-<span class='line'>126</span> </span><span class="WHIT">	</span><span class="NAME">read</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Port_read</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">	</span><span class="NAME">read</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">PotentioMeter_read</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>127</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>128</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>129</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
@@ -150,13 +150,13 @@
 <span class='line'>143</span> 	 * インスタンスの確保しているオブジェクトを破棄します。
 <span class='line'>144</span> 	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
 <span class='line'>145</span> 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-<span class='line'>146</span> 	 * @name mbedAppBoard.Port#dispose
+<span class='line'>146</span> 	 * @name mbedAppBoard.PotentioMeter#dispose
 <span class='line'>147</span> 	 * @function
 <span class='line'>148</span> 	 * @param {function()} i_callback
 <span class='line'>149</span> 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
 <span class='line'>150</span> 	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
 <span class='line'>151</span> 	 */</span><span class="WHIT">		</span><span class="WHIT">
-<span class='line'>152</span> </span><span class="WHIT">	</span><span class="NAME">dispose</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">Port_dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">	</span><span class="NAME">dispose</span><span class="PUNC">:</span><span class="KEYW">function</span><span class="WHIT"> </span><span class="NAME">PotentioMeter_dispose</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>153</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>154</span> </span><span class="WHIT">		</span><span class="KEYW">try</span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>155</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_t</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
@@ -174,6 +174,6 @@
 <span class='line'>167</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">	</span><span class="WHIT">
 <span class='line'>168</span> </span><span class="WHIT">	</span><span class="WHIT">
 <span class='line'>169</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>170</span> </span><span class="NAME">mbedAppBoard.Port</span><span class="PUNC">=</span><span class="NAME">CLASS</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="NAME">mbedAppBoard.PotentioMeter</span><span class="PUNC">=</span><span class="NAME">CLASS</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>171</span> </span><span class="PUNC">}</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>172</span> </span></pre></body></html>

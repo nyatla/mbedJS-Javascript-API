@@ -1162,15 +1162,15 @@ CLASS.prototype=
 mbedAppBoard.MMA7660=CLASS;
 }());
 /**
- * @fileOverview mbedApplicationBoardのPortドライバです。
+ * @fileOverview mbedApplicationBoardのPotentioMeterドライバです。
  */
 (function(){
 var MI=MiMicJS;
 
 /**
- * MbedApplicationBoardのPortを制御するクラスです。
+ * MbedApplicationBoardのPotentioMeterを制御するクラスです。
  * @constructor
- * @name mbedAppBoard.Port
+ * @name mbedAppBoard.PotentioMeter
  * @param {mbedJS.MCU} i_mcu
  * インスタンスをバインドするオブジェクトです。
  * @param {int} i_ch
@@ -1196,7 +1196,7 @@ var MI=MiMicJS;
  * @example //Generator
  * @example //Callback hell
  */
-var CLASS=function Port(i_mcu,i_ch,i_handler)
+var CLASS=function PotentioMeter(i_mcu,i_ch,i_handler)
 {
 	try{
 		var _t=this;
@@ -1232,10 +1232,10 @@ CLASS.prototype=
 	/**
 	 * コンストラクタでi_handlerにGeneratorを指定した場合のみ使用できます。
 	 * yieldと併用してコンストラクタの完了を待ちます。
-	 * @name mbedAppBoard.Port#waitForNew
+	 * @name mbedAppBoard.PotentioMeter#waitForNew
 	 * @function
 	 */
-	waitForNew:function Port_waitForNew()
+	waitForNew:function PotentioMeter_waitForNew()
 	{
 		try{
 			if(this._lc!=CLASS){throw new MI.MiMicException(MI.Error.NG_ILLEGAL_CALL);}
@@ -1248,7 +1248,7 @@ CLASS.prototype=
 	 * 加速度センサから値を取得します。
 	 * 関数の完了時にonRead_u16,又はコールバック関数でイベントを通知します。
 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-	 * @name mbedAppBoard.Port#read_u16
+	 * @name mbedAppBoard.PotentioMeter#read_u16
 	 * @function
 	 * @param {function(return)} i_callback
 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
@@ -1257,7 +1257,7 @@ CLASS.prototype=
 	 * センサから取得した値の配列です。16bit unsigned int値です。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */	
-	read_u16:function Port_read_u16()
+	read_u16:function PotentioMeter_read_u16()
 	{
 		try{
 			var _t=this;
@@ -1277,7 +1277,7 @@ CLASS.prototype=
 	 * 加速度センサから値を取得します。
 	 * 関数の完了時にonRead,又はコールバック関数でイベントを通知します。
 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-	 * @name mbedAppBoard.Port#read
+	 * @name mbedAppBoard.PotentioMeter#read
 	 * @function
 	 * @param {function(return)} i_callback
 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
@@ -1286,7 +1286,7 @@ CLASS.prototype=
 	 * センサから取得した値の配列です。0<=n<=1の値です。
 	 * 戻り値は、コールバック関数、共通コールバック関数、又はyield　returnの何れかで返します。
 	 */	
-	read:function Port_read()
+	read:function PotentioMeter_read()
 	{
 		try{
 			var _t=this;
@@ -1306,13 +1306,13 @@ CLASS.prototype=
 	 * インスタンスの確保しているオブジェクトを破棄します。
 	 * 関数の完了時にonDispose,又はコールバック関数でイベントを通知します。
 	 * コンストラクタでGeneratorを指定した場合、yieldと併用して完了を待機できます。
-	 * @name mbedAppBoard.Port#dispose
+	 * @name mbedAppBoard.PotentioMeter#dispose
 	 * @function
 	 * @param {function()} i_callback
 	 * 省略可能です。関数の完了通知を受け取るコールバック関数を指定します。関数の引数には、return値が入ります。
 	 * 省略時は、コンストラクタに指定した共通イベントハンドラが呼び出されます。
 	 */		
-	dispose:function Port_dispose()
+	dispose:function PotentioMeter_dispose()
 	{
 		try{
 			var _t=this;
@@ -1330,7 +1330,7 @@ CLASS.prototype=
 	}	
 	
 }
-mbedAppBoard.Port=CLASS;
+mbedAppBoard.PotentioMeter=CLASS;
 }());
 /**
  * @fileOverview mbedApplicationBoardのRgbLEDドライバです。

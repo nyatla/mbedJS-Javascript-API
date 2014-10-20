@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="../../../release/mbedJS.all.js"></script>
 <script type="text/javascript" src="../mbedAppBoard.types.js"></script>
-<script type="text/javascript" src="../mbedAppBoard.Port.js"></script>
+<script type="text/javascript" src="../mbedAppBoard.PotentioMeter.js"></script>
 <script type="text/javascript">
 
 
@@ -24,7 +24,7 @@ function callback_test()
 	var mcu=new mbedJS.Mcu(document.getElementById("addr").value,
 	{
 		onNew:function(){
-			var dev=new mbedAppBoard.Port(mcu,1,{
+			var dev=new mbedAppBoard.PotentioMeter(mcu,1,{
 			onNew:function(){
 				log("[PASS]onNew");
 				dev.read();

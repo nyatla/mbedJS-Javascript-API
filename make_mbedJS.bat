@@ -45,7 +45,7 @@ copy /b ^
 +"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.Joystick.js" ^
 +"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.LM75B.js" ^
 +"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.MMA7660.js" ^
-+"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.Port.js" ^
++"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.PotentioMeter.js" ^
 +"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.RgbLed.js" ^
 +"%DIR_DRIVER%\mbedApplicationBoard\mbedAppBoard.Speaker.js" ^
 

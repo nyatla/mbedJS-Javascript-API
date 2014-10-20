@@ -1,0 +1,92 @@
+<!-- スイッチを押すとHTMLに反映 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./lib/mbedJS.all.js"></script>
+<script type="text/javascript" src="./lib/mbedAppBoard.all.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="./config.js"></script>
+<script type="text/javascript">
+google.load("visualization", "1", {packages:["gauge"]});
+google.setOnLoadCallback(drawChart);
+var ready_chart=false;
+function drawChart() {
+
+	var data = google.visualization.arrayToDataTable([
+		['Label', 'Value'],
+		['Ch1', 0],
+		['Ch2', 0],
+	]);
+	
+	var options = {
+		width: 400, height: 400,
+		redFrom: 90, redTo: 100,
+		yellowFrom:80, yellowTo: 90,
+		minorTicks: 5
+	};
+	
+	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+	chart.draw(data, options);
+	ready_chart=true;
+	var mcu = new mbedJS.Mcu(_MBEDJS_ADDR,{
+		onNew : function() {
+			var port1 = new mbedAppBoard.PotentioMeter(mcu,1,function(){
+				var port2 = new mbedAppBoard.PotentioMeter(mcu,2,function(){
+					var tid=null;
+					function update()
+					{
+						port1.read_u16(function(v){
+					        data.setValue(0,1,Math.round(v/65535*100));
+							port2.read_u16(function(v){
+						        data.setValue(1,1,Math.round(v/65535*100));
+						        chart.draw(data, options);
+								tid=setTimeout(update,100);
+							});
+						});
+					}
+					tid=setTimeout(update,300);
+				    $(window).on('beforeunload', function() {
+						clearInterval(tid);
+						mcu.shutdown();
+				    });			
+				});
+			});
+		},
+		onError : function() {
+			alert("Error!");
+		}
+	});	
+}
+
+
+
+$(document).ready(function(){
+	//menuタブの準備
+	$("#nav").html(menuTag());
+});
+</script>
+	<style>
+	.sl{
+		font-size:24pt;
+		margin:2px;
+	}
+	td{
+		height:64px;
+	}
+
+	</style>
+</head>
+<body>
+	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
+<div style="margin:50px;">
+	<h1 class="" id="title">Pot - google chart</h1>
+	<div class="" style="width:100%;margin:50px;">
+		<div id="chart_div" style="width: 400px; height: 400px;"></div>
+	</div>
+</div>
+</body>
+</html>

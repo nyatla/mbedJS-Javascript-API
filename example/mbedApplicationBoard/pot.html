@@ -14,8 +14,8 @@
 
 function main(mcu)
 {
-	var port1 = new mbedAppBoard.Port(mcu,1,function(){
-		var port2 = new mbedAppBoard.Port(mcu,2,function(){
+	var port1 = new mbedAppBoard.PotentioMeter(mcu,1,function(){
+		var port2 = new mbedAppBoard.PotentioMeter(mcu,2,function(){
 			var tid=null;
 			function update()
 			{
@@ -63,7 +63,7 @@ $(document).ready(function(){
 <body onload="">
 	<ul id="nav" class="nav nav-tabs" role="tablist"></ul>
 	<div class="container">
-		<h1 class="text-center" id="title">Port</h1>
+		<h1 class="text-center" id="title">PotentioMeter</h1>
 		<div class="text-center" style="margin:50px;">
 			<div class="progress"><div  id="p1" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
 			<div class="progress"><div  id="p2" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
